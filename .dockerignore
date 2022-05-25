@@ -1,0 +1,21 @@
+# node
+node_modules
+npm-debug.log
+
+# git
+.git
+.gitignore
+
+# docker
+Dockerfile
+
+# enviroments
+.env
+.env.*
+
+# other
+*.md
+docs
+apidoc.js
+docker-compose.*
+nodemon.json
