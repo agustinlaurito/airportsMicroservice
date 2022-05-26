@@ -7,21 +7,24 @@ const _ = require('lodash');
 const Madhel = require('../../helpers/airportsData/madhel');
 
 class Update extends Base {
-    handler () {
-        const context = {};
 
+
+    handler (req) {
+        const context = {
+            opts: _.merge({}, req.query || {}),
+        };
+
+        console.log(context);
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context));
-        // .then(() => {
-        //     return context.parsedAirports;
-        // })
+
     }
 
     fetchCsv (context) {
         const airportFetcher = new AirportsData();
 
-        return airportFetcher.fetch()
+        return airportFetcher.fetch(context.opts)
             .then((parsedAirports) => {
                 context.parsedAirports = parsedAirports;
                 context.result = parsedAirports;
@@ -43,16 +46,14 @@ class Update extends Base {
                     const mergedAirport = _.merge(airport, madhelData);
                     resultAirports.push(mergedAirport);
                 })
-                .catch((error) => {
-                    // continue with the next airport
-                    console.log(error);
-                }));
-        });
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
+                .catch((error) => {error}));
             });
+
+            return P.all(promises)
+                .then(() => {
+                    context.result = resultAirports;
+                    return resultAirports;
+                });
     }
 }
 

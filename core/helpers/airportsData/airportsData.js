@@ -5,12 +5,11 @@ const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
 
 const defaultOptions = {
-    query: {
-        limit: 10,
-        page: 1,
-    }
+    pageSize: 10,
+    page: 1,
 };
 class AirportsData {
+
     fetch (options) {
         const context = {
             opts: _.defaultsDeep({}, options || {}, defaultOptions),
@@ -29,7 +28,7 @@ class AirportsData {
         const csvFilePath = './data/airports.csv';
         const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
         // set size of array to page size and page number
-        context.rawData = jsonArray.slice(context.opts.query.limit * (context.opts.query.page - 1), context.opts.query.limit * context.opts.query.page);
+        context.rawData = jsonArray.slice(context.opts.pageSize * (context.opts.page - 1), context.opts.pageSize * context.opts.page);
         return context;
     }
 
@@ -68,9 +67,12 @@ class AirportsData {
                 isActive: airport.inhab !== 'NO',
 
             };
+            
             airports.push(airportData);
+            
+        
         });
-
+        
         context.parsedAirports = airports;
         return context;
     }
