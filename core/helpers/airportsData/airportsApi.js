@@ -5,30 +5,41 @@ const lodash = require('lodash');
 const axios = require('axios');
 const config = require('../../../config/airportsApi');
 const P = require('bluebird');
+const errors = require('http-errors');
 
 class AirportsApi {
-    constructor() {
-        this.airports = [];
+
+    fetchData () {
+        const context = {
+            airportsList: [],
+        };
+
+        return P.bind(this)
+            .then(() => this.getAirports(context))
+            .then(() => this.parseAirports(context));
     }
 
-    async getAirports() {
-
+    getAirports (context) {
         const baseUrl = config.baseUrl;
-
-        return axios.get(baseUrl, {
+        const opts = {
             params: {
-                f: 'json',
                 where: '1=1',
                 outFields: '*',
-                outSR: 4326,
+                f: 'json',
             }
-        })
+        };
+        return axios.get(baseUrl, opts)
             .then(response => {
-                console.log(response.data);
+                context.airportsList = response.data.features;
             })
-
+            .catch(error => {
+                throw new errors.InternalServerError('Error al obtener los aeropuertos', error);
+            });
     }
 
+    parseAirports (context) {
+        console.log(context.airportsList);
+    }
 }
 
 module.exports = AirportsApi;

@@ -6,25 +6,22 @@ const config = require('../config/default');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const database = require('../core/helpers/database/database');
-const airportsApi = require('../core/helpers/airportsData/airportsApi');
+const airportsData = require('./helpers/airportsData/airportsData');
+const madhel = require('./helpers/airportsData/madhel');
 
 
-// const url = "http://www.tams.com.ar/organismos/vuelos.aspx";
-// axios(url).then((response) => {
-//   const html_data = response.data;
-//   const $ = cheerio.load(html_data);
-//   console.log(response);
-// });
-// init database
-// const db = new database();
+// const aptsData = new airportsData();
+// aptsData.handler();
 
-const apts = new airportsApi();
-apts.getAirports();
+const madhelService = new madhel("AER");
+madhelService.handler();
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
-  
+    res.send('Hello World!');
+});
+
+app.get('/update', require('../core/controllers/update'));
+
 app.listen(config.port, () => {
-    console.log(`Listening on port ${config.port}!`)
-    });
+    console.log(`Listening on port ${config.port}!`);
+});
