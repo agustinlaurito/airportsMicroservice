@@ -11,11 +11,9 @@ const https = require('https');
 
 class MadhelService {
 
-    constructor (target) {
-        this.targetAirport = target; // 3 letter code of the airport
-    }   
+    getAirport (target) {
 
-    handler () {
+        this.targetAirport = target; // 3 letter code of the airport
 
         const context = {
             rawData: [],

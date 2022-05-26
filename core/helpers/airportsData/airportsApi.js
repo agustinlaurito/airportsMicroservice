@@ -38,7 +38,7 @@ class AirportsApi {
     }
 
     parseAirports (context) {
-        console.log(context.airportsList);
+        //console.log(context.airportsList);
     }
 }
 

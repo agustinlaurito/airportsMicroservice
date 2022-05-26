@@ -7,9 +7,17 @@ const P = require('bluebird');
 const errors = require('http-errors');
 const _ = require('lodash');
 
+const defaultOptions = {
+    query: {
+        limit: 10,
+        offset: 0,
+        page: 1,
+    },
+}
+
 class Route {
     constructor (options) {
-        this.options = _.defaultsDeep({}, options || {});
+        this.options = _.defaultsDeep({}, options || {}, defaultOptions);
     }
 
     handle (req, res, next) {

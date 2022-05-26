@@ -7,11 +7,19 @@ const config = require('../../../config/airportsApi');
 const P = require('bluebird');
 const errors = require('http-errors');
 const csvToJson = require('convert-csv-to-json');
+const _ = require('lodash');
 
+const defaultOptions = {
+    query: {
+        limit: 10,
+        page: 1,
+    }
+}
 class AirportsData {
 
-    fetch () {
+    fetch (options) {
         const context = {
+            opts : _.defaultsDeep({}, options || {}, defaultOptions),
             rawData: [],
         };
 
@@ -27,7 +35,8 @@ class AirportsData {
 
         const csvFilePath = './data/airports.csv';
         const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
-        context.rawData = jsonArray;
+        // set size of array to page size and page number
+        context.rawData = jsonArray.slice(context.opts.query.limit * (context.opts.query.page - 1), context.opts.query.limit * context.opts.query.page);
         return context;
     }
 
@@ -71,7 +80,6 @@ class AirportsData {
         });
 
         context.parsedAirports = airports;
-        console.log(context.parsedAirports);
         return context;
     }
 
