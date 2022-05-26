@@ -1,14 +1,11 @@
 'use strict';
 
-const bluebird = require('bluebird');
-const lodash = require('lodash');
 const axios = require('axios');
 const config = require('../../../config/airportsApi');
 const P = require('bluebird');
 const errors = require('http-errors');
 
 class AirportsApi {
-
     fetchData () {
         const context = {
             airportsList: [],
@@ -38,7 +35,7 @@ class AirportsApi {
     }
 
     parseAirports (context) {
-        //console.log(context.airportsList);
+        // console.log(context.airportsList);
     }
 }
 

@@ -1,18 +1,13 @@
 'use strict';
 
-const bluebird = require('bluebird');
-const lodash = require('lodash');
 const axios = require('axios');
 const config = require('../../../config/madhel');
 const P = require('bluebird');
 const errors = require('http-errors');
-const csvToJson = require('convert-csv-to-json');
 const https = require('https');
 
 class MadhelService {
-
     getAirport (target) {
-
         this.targetAirport = target; // 3 letter code of the airport
 
         const context = {
@@ -25,16 +20,15 @@ class MadhelService {
     }
 
     fetchData (context) {
-
         const url = config.baseUrl + this.targetAirport;
-        
+
         return axios.get(url, {
-                httpsAgent: new https.Agent({
-                    rejectUnauthorized: false
-                })
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false
             })
+        })
             .then(response => {
-                if(response.data.length === 0) {
+                if (response.data.length === 0) {
                     throw new errors.NotFound('No se encontraron datos para el aeropuerto');
                 }
                 context.rawData = response.data;
@@ -42,11 +36,9 @@ class MadhelService {
             .catch(error => {
                 throw new errors.InternalServerError('Error al obtener los datos', error);
             });
-
     }
 
     parseAirport (context) {
-
         const airport = context.rawData;
         const airportData = {
             name: airport.human_readable_identifier,
@@ -70,7 +62,6 @@ class MadhelService {
         };
 
         return airportData;
-
     }
 }
 

@@ -1,11 +1,6 @@
 'use strict';
 
-const bluebird = require('bluebird');
-const lodash = require('lodash');
-const axios = require('axios');
-const config = require('../../../config/airportsApi');
 const P = require('bluebird');
-const errors = require('http-errors');
 const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
 
@@ -14,12 +9,11 @@ const defaultOptions = {
         limit: 10,
         page: 1,
     }
-}
+};
 class AirportsData {
-
     fetch (options) {
         const context = {
-            opts : _.defaultsDeep({}, options || {}, defaultOptions),
+            opts: _.defaultsDeep({}, options || {}, defaultOptions),
             rawData: [],
         };
 
@@ -32,7 +26,6 @@ class AirportsData {
     }
 
     readCsv (context) {
-
         const csvFilePath = './data/airports.csv';
         const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
         // set size of array to page size and page number
@@ -41,7 +34,6 @@ class AirportsData {
     }
 
     parseAirports (context) {
-
         const airportsList = context.rawData;
         const airports = [];
 
@@ -65,16 +57,16 @@ class AirportsData {
                 reference: airport.ref,
                 distanceToReference: airport.distancia_ref,
                 directionToReference: airport.direccion_ref,
-                public: airport.condicion === 'PUBLICO' ? true : false,
-                private: airport.condicion === 'PRIVADO' ? true : false,
-                controlled: airport.control === 'CONTROL' ? true : false,
+                public: airport.condicion === 'PUBLICO',
+                private: airport.condicion === 'PRIVADO',
+                controlled: airport.control === 'CONTROL',
                 region: airport.region,
                 fir: airport.fir,
                 use: airport.uso,
                 traffic: airport.trafico,
                 province: airport.provincia,
-                isActive: airport.inhab == 'NO' ? false : true,
-                
+                isActive: airport.inhab !== 'NO',
+
             };
             airports.push(airportData);
         });
@@ -82,8 +74,6 @@ class AirportsData {
         context.parsedAirports = airports;
         return context;
     }
-
-
 }
 
 module.exports = AirportsData;

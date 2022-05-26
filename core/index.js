@@ -3,12 +3,6 @@ console.log('\x1Bc');
 
 const app = require('../app');
 const config = require('../config/default');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const database = require('../core/helpers/database/database');
-const airportsData = require('./helpers/airportsData/airportsData');
-const madhel = require('./helpers/airportsData/madhel');
-
 
 // const aptsData = new airportsData();
 // aptsData.handler();

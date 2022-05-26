@@ -1,10 +1,6 @@
 'use strict';
 
-const bluebird = require('bluebird');
-const lodash = require('lodash');
-const axios = require('axios');
 const P = require('bluebird');
-const errors = require('http-errors');
 const _ = require('lodash');
 
 const defaultOptions = {
@@ -13,7 +9,7 @@ const defaultOptions = {
         offset: 0,
         page: 1,
     },
-}
+};
 
 class Route {
     constructor (options) {
@@ -24,7 +20,7 @@ class Route {
         return P.bind(this)
             .then(() => this.validate(req, res))
             .then(() => this.handler(req, res))
-            .then(result => this.success(res, result))
+            .then(result => this.success(res, result));
     }
 
     validate (req, res) {
@@ -47,8 +43,6 @@ class Route {
         }
         return res.status(statusCode).send(result);
     }
-
-
 }
 
 module.exports = Route;
