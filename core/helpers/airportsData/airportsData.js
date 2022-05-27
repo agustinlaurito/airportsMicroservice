@@ -24,7 +24,7 @@ class AirportsData {
     readCsv (context) {
         const csvFilePath = './data/airports.csv';
         const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
-        context.rawData = jsonArray.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
+        context.rawData = jsonArray;
         return context;
     }
 
@@ -64,12 +64,20 @@ class AirportsData {
 
             };
             
-            airports.push(airportData);
-            
+            if(this.options.filters){
+                _.each(this.options.filters, (filterValue, filterKey) => {
+                    if(airportData[filterKey] !== filterValue) {
+                        return;
+                    }
+                    airports.push(airportData);
+                });
+            }else{
+                airports.push(airportData);
+            }
         
         });
         
-        context.parsedAirports = airports;
+        context.parsedAirports = airports.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
         return context;
     }
 }

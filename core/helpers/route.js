@@ -2,12 +2,14 @@
 
 const P = require('bluebird');
 const _ = require('lodash');
+const defaultConfig = require('../../config/default');
 
 const defaultOptions = {
     query: {
         pageSize: '10',
         page: '1',
     },
+    filters: {},
 };
 
 class Route {
@@ -28,6 +30,19 @@ class Route {
 
     parseReq (req) {
         this.options.query = _.defaultsDeep({}, req.query || {}, this.options.query);
+        // parse filters
+        if(this.options.query.filters) {
+            // parse filters
+            const filters = this.options.query.filters.split(',');
+            this.options.query.filters = {};
+            _.each(filters, (filter) => {
+                const filterParts = filter.split('eq');
+                const filterKey = filterParts[0].trim();
+                const filterValue = filterParts[1].trim();
+                this.options.query.filters[filterKey] = filterValue;
+            });
+        }
+        
         return this;
 
     }
