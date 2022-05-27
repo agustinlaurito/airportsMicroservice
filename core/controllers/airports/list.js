@@ -8,13 +8,10 @@ const Madhel = require('../../helpers/airportsData/madhel');
 
 class Update extends Base {
 
+    handler () {
 
-    handler (req) {
-        const context = {
-            opts: _.merge({}, req.query || {}),
-        };
+        const context = {};
 
-        console.log(context);
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context));
@@ -24,7 +21,7 @@ class Update extends Base {
     fetchCsv (context) {
         const airportFetcher = new AirportsData();
 
-        return airportFetcher.fetch(context.opts)
+        return airportFetcher.fetch(this.options.query)
             .then((parsedAirports) => {
                 context.parsedAirports = parsedAirports;
                 context.result = parsedAirports;

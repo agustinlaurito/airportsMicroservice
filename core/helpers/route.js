@@ -5,22 +5,31 @@ const _ = require('lodash');
 
 const defaultOptions = {
     query: {
-        limit: 10,
-        offset: 0,
-        page: 1,
+        pageSize: '10',
+        page: '1',
     },
 };
 
 class Route {
-    constructor (options) {
-        this.options = _.defaultsDeep({}, options || {}, defaultOptions);
-    }
 
     handle (req, res, next) {
+
         return P.bind(this)
+            .then(() => this.prepareOptions(req.options))
+            .then(() => this.parseReq(req))
             .then(() => this.validate(req, res))
             .then(() => this.handler(req, res))
             .then(result => this.success(res, result));
+    }
+
+    prepareOptions (options) {
+        this.options = _.defaultsDeep({}, options || {}, defaultOptions);
+    }
+
+    parseReq (req) {
+        this.options.query = _.defaultsDeep({}, req.query || {}, this.options.query);
+        return this;
+
     }
 
     validate (req, res) {

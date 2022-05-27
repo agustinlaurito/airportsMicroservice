@@ -3,16 +3,13 @@
 const P = require('bluebird');
 const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
-
-const defaultOptions = {
-    pageSize: 10,
-    page: 1,
-};
 class AirportsData {
 
     fetch (options) {
+
+        this.options = options;
+        
         const context = {
-            opts: _.defaultsDeep({}, options || {}, defaultOptions),
             rawData: [],
         };
 
@@ -27,8 +24,7 @@ class AirportsData {
     readCsv (context) {
         const csvFilePath = './data/airports.csv';
         const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
-        // set size of array to page size and page number
-        context.rawData = jsonArray.slice(context.opts.pageSize * (context.opts.page - 1), context.opts.pageSize * context.opts.page);
+        context.rawData = jsonArray.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
         return context;
     }
 
