@@ -16,6 +16,7 @@ class AirportsData {
         return P.bind(this)
             .then(() => this.readCsv(context))
             .then(() => this.parseAirports(context))
+            .then(() => this.filter(context))
             .then(() => {
                 return context.parsedAirports;
             });
@@ -63,21 +64,29 @@ class AirportsData {
                 isActive: airport.inhab !== 'NO',
 
             };
-            
-            if(this.options.filters){
-                _.each(this.options.filters, (filterValue, filterKey) => {
-                    if(airportData[filterKey] !== filterValue) {
-                        return;
-                    }
-                    airports.push(airportData);
-                });
-            }else{
-                airports.push(airportData);
-            }
-        
+            airports.push(airportData);
         });
+        context.parsedAirports = airports;
+        return context;
+    }
+
+    filter (context) {
+
+        const airports = context.parsedAirports;
         
-        context.parsedAirports = airports.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
+        const filters = this.options.filters;
+        let filteredAirports = [];
+        if(filters){
+            filteredAirports = _.filter(airports, (airport) => {
+                return _.every(filters, (value, key) => {
+                    return airport[key] === value;
+                });
+            });
+        }else{
+            filteredAirports = airports;
+        }
+        
+        context.parsedAirports = filteredAirports.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
         return context;
     }
 }

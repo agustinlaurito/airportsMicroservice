@@ -30,13 +30,17 @@ class Update extends Base {
     }
 
     fetchMadhel (context) {
-        // loop through the parsedAirports and fetch the madhel data using the local code
+
+        if (!this.options.query.with || this.options.query.with.indexOf('madhel') === -1) {
+            context.result = context.parsedAirports;
+            return context.parsedAirports;
+        }
+
         const resultAirports = [];
         const promises = [];
-
+        
         _.each(context.parsedAirports, (airport) => {
             const madhelService = new Madhel();
-
             promises.push(madhelService.getAirport(airport.localCode)
                 .then((madhelData) => {
                     // merge both objects and add the madhel data to the airport
