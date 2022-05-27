@@ -4,12 +4,14 @@ console.log('\x1Bc');
 const app = require('../app');
 const config = require('../config/default');
 const errors = require('./helpers/errors');
+const smnService = require('./helpers/services/smn');
 
 // const aptsData = new airportsData();
 // aptsData.handler();
 
 // const madhelService = new madhel("AER");
 // madhelService.handler();
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

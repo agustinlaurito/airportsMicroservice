@@ -1,7 +1,7 @@
 'use strict';
 
 const P = require('bluebird');
-const AirportsData = require('../helpers/airportsData/airportsData');
+const AirportsData = require('../helpers/services/airportsData');
 const Base = require('../helpers/route');
 
 class Update extends Base {

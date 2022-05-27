@@ -24,12 +24,12 @@ services:
       - './docker/db/sql:/docker-entrypoint-initdb.d'
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
-  # app:
-  #     build:
-  #       context: .
-  #       dockerfile: ./Dockerfile
-  #     image: node-mysql-app
-  #     depends_on:
-  #       - mysqldb
-  #     stdin_open: true
-  #     tty: true
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: node-mysql-app
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
