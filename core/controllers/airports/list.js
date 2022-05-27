@@ -6,6 +6,7 @@ const Base = require('../../helpers/route');
 const _ = require('lodash');
 const Madhel = require('../../helpers/services/madhel');
 const Smn = require('../../helpers/services/smn');
+const coordinateHelper = require('../../helpers/coordinates');
 
 class Update extends Base {
     handler () {
@@ -14,7 +15,8 @@ class Update extends Base {
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context))
-            .then(() => this.fetchMetar(context));
+            .then(() => this.fetchMetar(context))
+            .then(() => this.fetchDirections(context));
     }
 
     fetchCsv (context) {
@@ -55,7 +57,6 @@ class Update extends Base {
 
     fetchMetar (context) {
         if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
-            context.result = context.result;
             return context.result;
         }
 
@@ -78,6 +79,32 @@ class Update extends Base {
                 return resultAirports;
             });
     }
+
+    fetchDirections (context) {
+        if ((!this.options.query.with || this.options.query.with.indexOf('directions') === -1) && !this.options.query.lat && !this.options.query.lon) {
+            return context.result;
+        }
+
+        const resultAirports = [];
+        const promises = [];
+        _.each(context.result, (airport) => {
+            
+            const aiportCoordinates = airport.geometry.coordinates;
+            if (aiportCoordinates) {
+                const coordinator = new coordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
+                const directions = coordinator.getDirections();
+                airport.directions = directions;
+                resultAirports.push(airport);
+            }
+        });
+
+        return P.all(promises)
+            .then(() => {
+                context.result = resultAirports;
+                return resultAirports;
+            });
+    }
+        
 }
 
 module.exports = new Update().handlerize();

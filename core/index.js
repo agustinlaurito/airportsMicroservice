@@ -12,7 +12,6 @@ const smnService = require('./helpers/services/smn');
 // const madhelService = new madhel("AER");
 // madhelService.handler();
 
-
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });

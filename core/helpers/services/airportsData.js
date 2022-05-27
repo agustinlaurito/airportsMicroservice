@@ -43,10 +43,10 @@ class AirportsData {
                 coordinates: airport.coordenadas,
                 geometry: {
                     type: 'Point',
-                    coordinates: [
-                        airport.latitud,
-                        airport.longitud,
-                    ],
+                    coordinates: {
+                        lat: parseFloat(airport.longitud),
+                        lng: parseFloat(airport.latitud),
+                    }
                 },
                 elevation: airport.elev,
                 elevationUnit: airport.uom_elev,

@@ -7,7 +7,6 @@ const errors = require('http-errors');
 const cheerio = require('cheerio');
 
 class Smn {
-
     testConnection () {
         return axios.get(config.url)
             .then(() => {
@@ -19,14 +18,13 @@ class Smn {
     }
 
     getByOaciCode (oaciCode) {
-
         const url = `${config.metarBaseURL}${oaciCode}`;
 
         return axios.get(url)
             .then(response => {
                 const $ = cheerio.load(response.data);
                 const metar = $('form[name="imprimir"]').find('input[type="hidden"]').val();
-                if(!metar) {
+                if (!metar) {
                     throw new errors.NotFound('Metar not found');
                 }
                 // get only the string that contains starting in METAR
@@ -34,13 +32,9 @@ class Smn {
                 return metarString;
             })
             .catch(error => {
-                console.log("Metar not found");
+                console.log('Metar not found');
             });
-
     }
-    
-
-
 }
 
 module.exports = Smn;
