@@ -2,7 +2,6 @@
 
 const P = require('bluebird');
 const _ = require('lodash');
-const defaultConfig = require('../../config/default');
 
 const defaultOptions = {
     query: {
@@ -13,15 +12,14 @@ const defaultOptions = {
 };
 
 class Route {
-
     handle (req, res, next) {
-
         return P.bind(this)
             .then(() => this.prepareOptions(req.options))
             .then(() => this.parseReq(req))
             .then(() => this.validate(req, res))
             .then(() => this.handler(req, res))
-            .then(result => this.success(res, result));
+            .then(result => this.success(res, result))
+            .catch(error => this.error(error, req, res, next));
     }
 
     prepareOptions (options) {
@@ -31,7 +29,7 @@ class Route {
     parseReq (req) {
         this.options.query = _.defaultsDeep({}, req.query || {}, this.options.query);
         // parse filters
-        if(this.options.query.filters) {
+        if (this.options.query.filters) {
             // parse filters
             const filters = this.options.query.filters.split(',');
             this.options.query.filters = {};
@@ -42,9 +40,8 @@ class Route {
                 this.options.query.filters[filterKey] = filterValue;
             });
         }
-        
-        return this;
 
+        return this;
     }
 
     validate (req, res) {
@@ -66,6 +63,10 @@ class Route {
             result = result.response;
         }
         return res.status(statusCode).send(result);
+    }
+
+    error (err, req, res, next) {
+        return next(err);
     }
 }
 

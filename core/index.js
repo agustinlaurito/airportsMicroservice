@@ -3,6 +3,7 @@ console.log('\x1Bc');
 
 const app = require('../app');
 const config = require('../config/default');
+const errors = require('./helpers/errors');
 
 // const aptsData = new airportsData();
 // aptsData.handler();
@@ -16,6 +17,8 @@ app.get('/', (req, res) => {
 
 app.get('/update', require('../core/controllers/update'));
 app.get('/airports/list', require('../core/controllers/airports/list'));
+
+errors(app);
 
 app.listen(config.port, () => {
     console.log(`Listening on port ${config.port}!`);

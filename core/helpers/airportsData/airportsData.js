@@ -3,12 +3,12 @@
 const P = require('bluebird');
 const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
+const errors = require('http-errors');
+
 class AirportsData {
-
     fetch (options) {
-
         this.options = options;
-        
+
         const context = {
             rawData: [],
         };
@@ -71,21 +71,25 @@ class AirportsData {
     }
 
     filter (context) {
-
         const airports = context.parsedAirports;
-        
+
         const filters = this.options.filters;
         let filteredAirports = [];
-        if(filters){
+        if (filters) {
             filteredAirports = _.filter(airports, (airport) => {
                 return _.every(filters, (value, key) => {
                     return airport[key] === value;
                 });
             });
-        }else{
+
+            if (filteredAirports.length === 0) {
+                throw new errors.NotFound('No se encontraron aeropuertos con los filtros especificados');
+            }
+        }
+        else {
             filteredAirports = airports;
         }
-        
+
         context.parsedAirports = filteredAirports.slice(this.options.pageSize * (this.options.page - 1), this.options.pageSize * this.options.page);
         return context;
     }

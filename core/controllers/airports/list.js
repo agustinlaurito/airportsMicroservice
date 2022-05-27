@@ -7,15 +7,12 @@ const _ = require('lodash');
 const Madhel = require('../../helpers/airportsData/madhel');
 
 class Update extends Base {
-
     handler () {
-
         const context = {};
 
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context));
-
     }
 
     fetchCsv (context) {
@@ -30,7 +27,6 @@ class Update extends Base {
     }
 
     fetchMadhel (context) {
-
         if (!this.options.query.with || this.options.query.with.indexOf('madhel') === -1) {
             context.result = context.parsedAirports;
             return context.parsedAirports;
@@ -38,23 +34,21 @@ class Update extends Base {
 
         const resultAirports = [];
         const promises = [];
-        
+
         _.each(context.parsedAirports, (airport) => {
             const madhelService = new Madhel();
             promises.push(madhelService.getAirport(airport.localCode)
                 .then((madhelData) => {
-                    // merge both objects and add the madhel data to the airport
                     const mergedAirport = _.merge(airport, madhelData);
                     resultAirports.push(mergedAirport);
                 })
-                .catch((error) => {error}));
+            );
+        });
+        return P.all(promises)
+            .then(() => {
+                context.result = resultAirports;
+                return resultAirports;
             });
-
-            return P.all(promises)
-                .then(() => {
-                    context.result = resultAirports;
-                    return resultAirports;
-                });
     }
 }
 
