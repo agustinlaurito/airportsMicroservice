@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 
 app.get('/update', require('../core/controllers/update'));
 app.get('/airports/list', require('../core/controllers/airports/list'));
+app.get('/airports/autocompleteQuery', require('../core/controllers/airports/autocompleteQuery'));
 
 errors(app);
 

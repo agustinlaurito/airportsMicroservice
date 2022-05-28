@@ -39,7 +39,7 @@ class AirportsData {
                 oaciCode: airport.oaci,
                 iataCode: airport.iata,
                 type: airport.type,
-                name: airport.denominacion,
+                name: airport.denominacion.replace(/[\\\/\(\)\[\]\{\}\<\>\?\:\;\,\|\"\'\*]/g, ''),
                 coordinates: airport.coordenadas,
                 geometry: {
                     type: 'Point',
@@ -64,6 +64,12 @@ class AirportsData {
                 isActive: airport.inhab !== 'NO',
 
             };
+           
+            
+            
+            
+            
+
             airports.push(airportData);
         });
         context.parsedAirports = airports;

@@ -16,7 +16,7 @@ class Update extends Base {
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context))
             .then(() => this.fetchMetar(context))
-            .then(() => this.fetchDirections(context));
+            .then(() => this.fetchDirections(context))
     }
 
     fetchCsv (context) {
