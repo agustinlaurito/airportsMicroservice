@@ -2,12 +2,14 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
 
 app.enable('trust proxy');
 app.disable('x-powered-by');
+app.use(cors());
 app.use(bodyParser.raw());
 app.use(bodyParser.text());
 app.use(bodyParser.json());

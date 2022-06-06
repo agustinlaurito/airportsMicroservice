@@ -39,8 +39,11 @@ class AirportsData {
                 oaciCode: airport.oaci,
                 iataCode: airport.iata,
                 type: airport.type,
-                name: airport.denominacion.replace(/[\\\/\(\)\[\]\{\}\<\>\?\:\;\,\|\"\'\*]/g, ''),
-                coordinates: airport.coordenadas,
+                name: airport.denominacion.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, ''),
+                coordinates: [
+                    airport.coordenadas.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').split('  ')[0],
+                    airport.coordenadas.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').split('  ')[1],
+                ],
                 geometry: {
                     type: 'Point',
                     coordinates: {
@@ -64,12 +67,10 @@ class AirportsData {
                 isActive: airport.inhab !== 'NO',
 
             };
-           
+            //airportData.name // replace backslashes with nothing and slashes with spaces. also remove quotes
             
             
-            
-            
-
+                
             airports.push(airportData);
         });
         context.parsedAirports = airports;

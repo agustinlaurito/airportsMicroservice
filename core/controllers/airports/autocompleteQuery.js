@@ -30,13 +30,18 @@ class Autocomplete extends Base {
     }
 
     getIndexes (context) {
+        let index = 0;
         // make a list to search in for any airport using localCode, iataCode, icaoCode or name
         const indexes = _.map(context.parsedAirports, (airport) => {
+            let description = `${airport.name} - ${airport.localCode}`;
+            airport.oaciCode ? description += ` - ${airport.oaciCode}` : null;
             return {
+                id: index++,
                 localCode: airport.localCode,
                 iataCode: airport.iataCode,
-                icaoCode: airport.icaoCode,
-                name: airport.name
+                oaciCode: airport.oaciCode,
+                name: airport.name,
+                description: description
             };
         });
 

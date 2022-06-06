@@ -27,6 +27,7 @@
     "cheerio": "^1.0.0-rc.11",
     "config": "^3.3.7",
     "convert-csv-to-json": "^1.3.3",
+    "cors": "^2.8.5",
     "eslint": "^8.16.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
