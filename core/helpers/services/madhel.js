@@ -5,6 +5,21 @@ const config = require('../../../config/madhel');
 const P = require('bluebird');
 const errors = require('http-errors');
 const https = require('https');
+const _ = require('lodash');
+
+function telephoneParser (telephones) {
+    if (telephones.length === 0) { return null }
+
+    let result = [];
+    _.each(telephones, (telephone) => {
+        const telephoneData = {
+            number: telephone.split(' - ')[0],
+            type: telephone.split(' - ')[1] || 'Contacto',
+        };
+        result.push(telephoneData);
+    });
+    return result;
+}
 
 class MadhelService {
     getAirport (target) {
@@ -44,7 +59,7 @@ class MadhelService {
             name: airport.human_readable_identifier,
             localCode: airport.data.local,
             runways: airport.data.rwy,
-            telephones: airport.data.telephone,
+            telephones: telephoneParser(airport.data.telephone),
             fuel: airport.data.fuel,
             workingHours: airport.data.service_schedule,
             humanReadableLocation: airport.data.human_readable_localization,

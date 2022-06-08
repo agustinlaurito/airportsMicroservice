@@ -5,6 +5,37 @@ const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
 const errors = require('http-errors');
 
+const parseFir = (fir) => {
+    let name = "";
+
+    switch (fir) {
+        default:
+            name = fir;
+            break;
+        case "SAVF":
+            name = "FIR Comodoro Rivadavia";
+            break;
+        case "SACF":
+            name = "FIR Córdoba";
+            break;
+        case "SAEF":
+            name = "FIR Ezeiza"
+            break;
+        case "SAMF":
+            name = "FIR Mendoza"
+            break;
+        case "SARR":
+            name = "FIR Resistencia"
+            break;
+    }
+
+    return {
+        name: name,
+        code: fir
+    }
+}
+
+
 class AirportsData {
     fetch (options) {
         this.options = options;
@@ -60,16 +91,13 @@ class AirportsData {
                 private: airport.condicion === 'PRIVADO',
                 controlled: airport.control === 'CONTROL',
                 region: airport.region,
-                fir: airport.fir,
+                fir: parseFir(airport.fir),
                 use: airport.uso,
                 traffic: airport.trafico,
                 province: airport.provincia,
                 isActive: airport.inhab !== 'NO',
 
-            };
-            //airportData.name // replace backslashes with nothing and slashes with spaces. also remove quotes
-            
-            
+            };            
                 
             airports.push(airportData);
         });
