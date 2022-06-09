@@ -9,13 +9,12 @@ const Smn = require('../../helpers/services/smn');
 const coordinateHelper = require('../../helpers/coordinates');
 
 class Autocomplete extends Base {
-
     handler () {
         const context = {};
 
         return P.bind(this)
             .then(() => this.fetchCsv(context))
-            .then(() => this.getIndexes(context))
+            .then(() => this.getIndexes(context));
     }
 
     fetchCsv (context) {
@@ -41,17 +40,13 @@ class Autocomplete extends Base {
                 iataCode: airport.iataCode,
                 oaciCode: airport.oaciCode,
                 name: airport.name,
-                description: description
+                description
             };
         });
 
         context.indexes = indexes;
         return context.indexes;
     }
-
-
-
-        
 }
 
 module.exports = new Autocomplete().handlerize();

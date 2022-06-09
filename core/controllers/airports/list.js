@@ -16,7 +16,7 @@ class Update extends Base {
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context))
             .then(() => this.fetchMetar(context))
-            .then(() => this.fetchDirections(context))
+            .then(() => this.fetchDirections(context));
     }
 
     fetchCsv (context) {
@@ -88,7 +88,6 @@ class Update extends Base {
         const resultAirports = [];
         const promises = [];
         _.each(context.result, (airport) => {
-            
             const aiportCoordinates = airport.geometry.coordinates;
             if (aiportCoordinates) {
                 const coordinator = new coordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
@@ -104,7 +103,6 @@ class Update extends Base {
                 return resultAirports;
             });
     }
-        
 }
 
 module.exports = new Update().handlerize();

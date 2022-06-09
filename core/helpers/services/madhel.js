@@ -8,9 +8,9 @@ const https = require('https');
 const _ = require('lodash');
 
 function telephoneParser (telephones) {
-    if (telephones.length === 0) { return null }
+    if (telephones.length === 0) { return null; }
 
-    let result = [];
+    const result = [];
     _.each(telephones, (telephone) => {
         const telephoneData = {
             number: telephone.split(' - ')[0],
@@ -18,6 +18,59 @@ function telephoneParser (telephones) {
         };
         result.push(telephoneData);
     });
+    return result;
+}
+
+function parseNorms (norms) {
+    
+            if (norms.length === 0) { return null; }
+            let result = [];
+            const keys = Object.keys(norms);
+            _.each(keys, (key) => {
+                // get the content of the key
+                const type = _.startCase(_.toLower(key)); // to upper;
+                const content = norms[key].content;
+                // get the related documents of the key
+                const related_documents = norms[key].related_documents;
+                // create the object
+                const obj = {
+                    type,
+                    content,
+                    related_documents,
+                };
+                // push the object to the result array
+                result.push(obj);
+            });
+            return result;
+}
+
+function parseHelpers (helpers) {
+    if (helpers.length === 0) { return null; }
+    // { visual: '', radio: [] }
+    // thats a response from the api. in that case, result should be empty
+
+
+    
+    const result = [];
+    const keys = Object.keys(helpers);
+    _.each(keys, (key) => {
+        // get the content of the key
+        const type = _.startCase(_.toLower(key)); // to upper;
+        let rules = helpers[key];
+        if (rules.length === 0) { return null; }
+        // if rules is text
+        if (typeof rules === 'string') {
+            // split in /n and save in array
+            rules = rules.split('\r\n');
+        }
+        const obj = {
+            type,
+            helpers : rules,
+        };
+        // push the object to the result array
+        result.push(obj);
+    });
+    if (result.length === 0) { return ""; }
     return result;
 }
 
@@ -63,8 +116,8 @@ class MadhelService {
             fuel: airport.data.fuel,
             workingHours: airport.data.service_schedule,
             humanReadableLocation: airport.data.human_readable_localization,
-            helpers: airport.data.helpers_system ? airport.data.helpers_system : [],
-            norms: airport.data.norms ? airport.data.norms : [],
+            helpers: parseHelpers(airport.data.helpers_system),
+            norms: parseNorms(airport.data.norms),
             ats: airport.data.ats,
             atz: airport.data.atz,
             thr: airport.data.thr,

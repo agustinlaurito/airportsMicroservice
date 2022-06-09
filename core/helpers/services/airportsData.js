@@ -6,35 +6,34 @@ const _ = require('lodash');
 const errors = require('http-errors');
 
 const parseFir = (fir) => {
-    let name = "";
+    let name = '';
 
     switch (fir) {
         default:
             name = fir;
             break;
-        case "SAVF":
-            name = "FIR Comodoro Rivadavia";
+        case 'SAVF':
+            name = 'FIR Comodoro Rivadavia';
             break;
-        case "SACF":
-            name = "FIR Córdoba";
+        case 'SACF':
+            name = 'FIR Córdoba';
             break;
-        case "SAEF":
-            name = "FIR Ezeiza"
+        case 'SAEF':
+            name = 'FIR Ezeiza';
             break;
-        case "SAMF":
-            name = "FIR Mendoza"
+        case 'SAMF':
+            name = 'FIR Mendoza';
             break;
-        case "SARR":
-            name = "FIR Resistencia"
+        case 'SARR':
+            name = 'FIR Resistencia';
             break;
     }
 
     return {
-        name: name,
+        name,
         code: fir
-    }
-}
-
+    };
+};
 
 class AirportsData {
     fetch (options) {
@@ -97,8 +96,8 @@ class AirportsData {
                 province: airport.provincia,
                 isActive: airport.inhab !== 'NO',
 
-            };            
-                
+            };
+
             airports.push(airportData);
         });
         context.parsedAirports = airports;
