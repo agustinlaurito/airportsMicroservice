@@ -16,6 +16,8 @@ class Update extends Base {
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context))
             .then(() => this.fetchMetar(context))
+            .then(() => this.fetchTaf(context))
+            .then(() => this.fetchAlternateMetar(context))
             .then(() => this.fetchDirections(context));
     }
 
@@ -70,14 +72,66 @@ class Update extends Base {
                     // create attribute metar
                     airport.metar = metar;
                     resultAirports.push(airport);
-                })
-            );
+                }));
         });
         return P.all(promises)
             .then(() => {
                 context.result = resultAirports;
                 return resultAirports;
             });
+    }
+
+    fetchTaf (context) {
+        if (!this.options.query.with || this.options.query.with.indexOf('taf') === -1) {
+            return context.result;
+        }
+        const resultAirports = [];
+        const promises = [];
+        _.each(context.result, (airport) => {
+            const smnService = new Smn();
+            promises.push(smnService.getTafByOaciCode(airport.oaciCode)
+                .then((taf) => {
+                    // create attribute taf
+                    airport.taf = taf;
+                    resultAirports.push(airport);
+                }));
+        });
+        return P.all(promises)
+            .then(() => {
+                context.result = resultAirports;
+                return resultAirports;
+            });
+    }
+
+    fetchAlternateMetar (context) {
+        
+        if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
+            return context.result;
+        }
+        let promises = [];
+        let resultAirports = [];
+
+        _.each(context.result, (airport) => {
+            if (!airport.closestAirport) {
+                return;
+            }
+            const smnService = new Smn();
+            promises.push(smnService.getByOaciCode(airport.closestAirport.oaciCode)
+                .then((metar) => {
+                    // create attribute metar
+                    airport.closestAirport.metar = metar;
+                    resultAirports.push(airport);
+                })
+                .catch(() => {
+                    airport.closestAirport.metar = null;
+                    resultAirports.push(airport);
+                }));
+        })
+        return P.all(promises)
+            .then(() => {
+                context.result = resultAirports;
+                return resultAirports;
+            })
     }
 
     fetchDirections (context) {

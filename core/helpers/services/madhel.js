@@ -6,6 +6,8 @@ const P = require('bluebird');
 const errors = require('http-errors');
 const https = require('https');
 const _ = require('lodash');
+const FormData = require('form-data');
+const querystring = require('querystring');
 
 function telephoneParser (telephones) {
     if (telephones.length === 0) { return null; }
@@ -74,6 +76,66 @@ function parseHelpers (helpers) {
     return result;
 }
 
+function parseAts (ats) {
+    
+    const result = [];
+
+    _.each(ats, (selected) => {
+        // replace the /n with spaces and remove backslashes, quotes and \t
+        const at = selected.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').replace(/\t/g, ' ');
+        result.push(at);
+    });
+    if (result.length === 0) { return ""}
+    return result;
+}
+
+function parseAprons (aprons, taxiways) {
+    
+    const apns = [];
+    const twys = [];
+
+    _.each(aprons, (selected) => {
+        _.each(selected.split('.'), (ap) => {
+            const apn = ap.replace(/\//g, ' ').replace(/"/g, '');
+            if (apn.length) {
+                apns.push(apn);
+            }
+        });
+    });
+
+    _.each(taxiways, (selected) => {
+        // replace the /n with spaces and remove backslashes, quotes and \t
+        const taxiway = selected.replace(/\\/g, '').replace(/\t/g, ' ');
+        twys.push(taxiway);
+    });
+    // merge the arrays
+    const apronTwy = {
+        taxiways: twys,
+        aprons: apns,
+    }
+    return apronTwy;
+
+}
+
+function parseNotamDescription (notam) {
+    /**
+     * "IN IAC 1 ILS ILS Z RWY 11 AND IAC 2 ILS Y RWY 11 AMDT AIRAC 1/22 WEF 21 APR 2022, IAC 3 ILS X RWY 11 AND IAC 4 ILS W RWY 11 AMDT A 1/16 WEF 07 JAN 2016 IN PLAN VIEW AND PROFILE VIEW OM AND MM NOT AVBL <span id=\"versionbreak\">Versión en Español:</span>EN IAC 1 ILS ILS Z RWY 11 Y IAC 2 ILS Y RWY 11 AMDT AIRAC 1/22 WEF 21 APR 2022, IAC 3 ILS X RWY 11 Y IAC 4 ILS W RWY 11 AMDT A 1/16 WEF 07 JAN 2016 EN VISTA DE PLANTA Y PERFIL OM Y MM NO AVBL"
+     */
+    // split the string where the word Versión en Español appears
+    if (notam.indexOf('Versión en Español:') === -1) {
+        return notam;
+    }
+
+    const split = notam.split('<span id="versionbreak">');
+    const firstPart = split[0];
+    const secondPart = split[1].replace('</span>', '').replace('Versión en Español', 'Version en Español: ')
+
+    return {
+        english: firstPart,
+        spanish: secondPart,
+    };
+}
+
 class MadhelService {
     getAirport (target) {
         this.targetAirport = target; // 3 letter code of the airport
@@ -84,6 +146,8 @@ class MadhelService {
 
         return P.bind(this)
             .then(() => this.fetchData(context))
+            .then(() => this.fetchNotam(context))
+            .then(() => this.parseNotam(context))
             .then(() => this.parseAirport(context));
     }
 
@@ -106,6 +170,45 @@ class MadhelService {
             });
     }
 
+    fetchNotam(context){
+        
+        const formData = new FormData();
+        formData.append('indicador', this.targetAirport);
+        
+        return axios.post(config.notamUrl, formData, {
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false
+                })
+            })
+            .then(response => {
+                context.notam = response.data;
+            })
+            .catch(error => {
+                console.log('NOTAMs not found');
+                P.resolve(error);
+            });
+    }
+
+    parseNotam(context){
+        const notam = context.notam;
+        const notamArray = [];
+        
+        _.each(notam, (notamItem) => {
+            const notamObj = {
+                ad: notamItem.ad,
+                indicador: notamItem.indicador,
+                number: notamItem.notam,
+                valid: {
+                    desde: notamItem.desde,
+                    hasta: notamItem.hasta,
+                },
+                description: parseNotamDescription(notamItem.novedad),
+            };
+            notamArray.push(notamObj);
+        });
+        context.notam = notamArray;
+    }
+
     parseAirport (context) {
         const airport = context.rawData;
         const airportData = {
@@ -118,17 +221,16 @@ class MadhelService {
             humanReadableLocation: airport.data.human_readable_localization,
             helpers: parseHelpers(airport.data.helpers_system),
             norms: parseNorms(airport.data.norms),
-            ats: airport.data.ats,
+            ats: parseAts(airport.data.ats),
             atz: airport.data.atz,
             thr: airport.data.thr,
-            twy: airport.data.twy,
             runwayDistaces: airport.data.rwy_declared_distances,
-            apron: airport.data.apn,
+            apronTwy: parseAprons(airport.data.apn, airport.data.twy),
             status: airport.metadata.status,
             type: airport.type,
             updatedAt: airport.updated_at,
+            notam: context.notam,
         };
-
         return airportData;
     }
 }

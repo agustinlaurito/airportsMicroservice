@@ -5,6 +5,7 @@ const app = require('../app');
 const config = require('../config/default');
 const errors = require('./helpers/errors');
 const smnService = require('./helpers/services/smn');
+const converter = require('./helpers/CsvConverterAndMetar');
 
 // const aptsData = new airportsData();
 // aptsData.handler();

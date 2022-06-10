@@ -4,6 +4,7 @@ const P = require('bluebird');
 const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
 const errors = require('http-errors');
+const fs = require('fs');
 
 const parseFir = (fir) => {
     let name = '';
@@ -44,7 +45,7 @@ class AirportsData {
         };
 
         return P.bind(this)
-            .then(() => this.readCsv(context))
+            .then(() => this.readJson(context))
             .then(() => this.parseAirports(context))
             .then(() => this.filter(context))
             .then(() => {
@@ -59,6 +60,13 @@ class AirportsData {
         return context;
     }
 
+    readJson (context) {
+        const jsonFilePath = './data/airports.json';
+        const jsonArray = JSON.parse(fs.readFileSync(jsonFilePath));
+        context.rawData = jsonArray;
+        return context;
+    }
+
     parseAirports (context) {
         const airportsList = context.rawData;
         const airports = [];
@@ -69,6 +77,7 @@ class AirportsData {
                 oaciCode: airport.oaci,
                 iataCode: airport.iata,
                 type: airport.type,
+                shortName: airport.denominacion.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, ''),
                 name: airport.denominacion.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, ''),
                 coordinates: [
                     airport.coordenadas.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').split('  ')[0],
@@ -95,6 +104,7 @@ class AirportsData {
                 traffic: airport.trafico,
                 province: airport.provincia,
                 isActive: airport.inhab !== 'NO',
+                closestAirport: airport.closestAirport || null,
 
             };
 

@@ -27,7 +27,7 @@ class coordinateHelper {
     }
 
     getDistanceFromLatLonInKm (lat1, lon1, lat2, lon2) {
-        console.log(lat1, lon1, lat2, lon2);
+        // console.log(lat1, lon1, lat2, lon2);
         const R = 6371; // Radius of the earth in km
         const dLat = toRadians(lat2 - lat1); // deg2rad below
         const dLon = toRadians(lon2 - lon1);
