@@ -23,6 +23,8 @@ app.get('/airports/autocompleteQuery', require('../core/controllers/airports/aut
 
 errors(app);
 
+// converter();
+
 app.listen(config.port, () => {
     console.log(`Listening on port ${config.port}!`);
 });

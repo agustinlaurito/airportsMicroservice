@@ -18,7 +18,7 @@ class coordinateHelper {
     }
 
     getDirections () {
-        const distanceNm = this.getDistanceFromLatLonInKm(this.coordinates.start.lat, this.coordinates.start.lng, this.coordinates.end.lat, this.coordinates.end.lng);
+        const distanceNm = this.getDistanceFromLatLonInNm(this.coordinates.start.lat, this.coordinates.start.lng, this.coordinates.end.lat, this.coordinates.end.lng) / 1.151;
         const bearing = this.getBearing(this.coordinates.start.lat, this.coordinates.start.lng, this.coordinates.end.lat, this.coordinates.end.lng);
         return {
             distanceNm,

@@ -122,18 +122,45 @@ function parseNotamDescription (notam) {
      * "IN IAC 1 ILS ILS Z RWY 11 AND IAC 2 ILS Y RWY 11 AMDT AIRAC 1/22 WEF 21 APR 2022, IAC 3 ILS X RWY 11 AND IAC 4 ILS W RWY 11 AMDT A 1/16 WEF 07 JAN 2016 IN PLAN VIEW AND PROFILE VIEW OM AND MM NOT AVBL <span id=\"versionbreak\">Versión en Español:</span>EN IAC 1 ILS ILS Z RWY 11 Y IAC 2 ILS Y RWY 11 AMDT AIRAC 1/22 WEF 21 APR 2022, IAC 3 ILS X RWY 11 Y IAC 4 ILS W RWY 11 AMDT A 1/16 WEF 07 JAN 2016 EN VISTA DE PLANTA Y PERFIL OM Y MM NO AVBL"
      */
     // split the string where the word Versión en Español appears
-    if (notam.indexOf('Versión en Español:') === -1) {
+    if (notam.indexOf('Versión en Español:') < 1) {
         return notam;
     }
 
     const split = notam.split('<span id="versionbreak">');
     const firstPart = split[0];
-    const secondPart = split[1].replace('</span>', '').replace('Versión en Español', 'Version en Español: ')
+    const secondPart = split[1].replace('</span>', '').replace('Versión en Español', 'Version en Español ')
 
     return {
         english: firstPart,
         spanish: secondPart,
     };
+}
+
+function parseRunways (runways) {
+    /**
+ * 			"03/21 1000x30 M - Tierra.",
+			"08/26 900x30 M - Tierra."
+     */
+    let result = [];
+    _.each(runways, (runway) => {
+        console.log(runway);
+        const regex = /(\d{2}\/\d{2})/g;
+        const runwayNumbers = runway.match(regex);
+        // make runway numbers a string not a array
+
+        if (runwayNumbers === null) { return; }
+        if (runway.search(/(\d{2}\/\d{2})/g) > 3) { return; }
+        
+        const runwayWidth = runway.split(' ')[1] || '';
+        const runwayType = runway.split('-')[1]|| '';
+
+        result.push({
+            numbers: runwayNumbers.toString(),
+            width: runwayWidth,
+            surface: runwayType,
+        });
+    })
+    return result;
 }
 
 class MadhelService {
@@ -214,7 +241,7 @@ class MadhelService {
         const airportData = {
             name: airport.human_readable_identifier,
             localCode: airport.data.local,
-            runways: airport.data.rwy,
+            runways: parseRunways(airport.data.rwy),
             telephones: telephoneParser(airport.data.telephone),
             fuel: airport.data.fuel,
             workingHours: airport.data.service_schedule,

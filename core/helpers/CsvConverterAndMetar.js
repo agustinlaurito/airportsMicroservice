@@ -18,20 +18,21 @@ function csvconverter(){
         _.forEach(jsonArray, (testAirport) => {
 
             const coordinator = new coordinateHelper({lat, lng}, { lat: testAirport.latitud, lng: testAirport.longitud });
-            let distance = coordinator.getDirections().distanceNm;
+            let indications = coordinator.getDirections();
             
-            if(distance < closestAirportDistance && airport.oaci !== testAirport.oaci) {
+            if(indications.distanceNm < closestAirportDistance && airport.oaci !== testAirport.oaci) {
                 if(!testAirport.oaci){
                     return;
                 }
                 if(testAirport.sna === 'NO'){
                     return;
                 }
-                closestAirportDistance = distance;
+                closestAirportDistance = indications.distanceNm;
                 closestAirport = {
                     localCode: testAirport.local,
                     oaciCode: testAirport.oaci,
-                    distance: distance,
+                    distance: closestAirportDistance,
+                    bearing: indications.bearing
                 }
             }
             airport.closestAirport = closestAirport;
