@@ -8,6 +8,8 @@ const cheerio = require('cheerio');
 const metarParser = require('metar-parser');
 
 class Smn {
+
+    
     testConnection () {
         return axios.get(config.url)
             .then(() => {
