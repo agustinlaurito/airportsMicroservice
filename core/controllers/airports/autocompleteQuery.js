@@ -4,9 +4,6 @@ const P = require('bluebird');
 const AirportsData = require('../../helpers/services/airportsData');
 const Base = require('../../helpers/route');
 const _ = require('lodash');
-const Madhel = require('../../helpers/services/madhel');
-const Smn = require('../../helpers/services/smn');
-const coordinateHelper = require('../../helpers/coordinates');
 
 class Autocomplete extends Base {
     handler () {
@@ -33,7 +30,10 @@ class Autocomplete extends Base {
         // make a list to search in for any airport using localCode, iataCode, icaoCode or name
         const indexes = _.map(context.parsedAirports, (airport) => {
             let description = `${airport.name} - ${airport.localCode}`;
-            airport.oaciCode ? description += ` - ${airport.oaciCode}` : null;
+            // airport.oaciCode ? (description += ` - ${airport.oaciCode}`) : null;
+            if (airport.oaciCode) {
+                description += ` - ${airport.oaciCode}`;
+            }
             return {
                 id: index++,
                 localCode: airport.localCode,

@@ -6,7 +6,7 @@ const Base = require('../../helpers/route');
 const _ = require('lodash');
 const Madhel = require('../../helpers/services/madhel');
 const Smn = require('../../helpers/services/smn');
-const coordinateHelper = require('../../helpers/coordinates');
+const CoordinateHelper = require('../../helpers/coordinates');
 
 class Update extends Base {
     handler () {
@@ -104,12 +104,11 @@ class Update extends Base {
     }
 
     fetchAlternateMetar (context) {
-        
         if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
             return context.result;
         }
-        let promises = [];
-        let resultAirports = [];
+        const promises = [];
+        const resultAirports = [];
 
         _.each(context.result, (airport) => {
             if (!airport.closestAirport) {
@@ -126,12 +125,12 @@ class Update extends Base {
                     airport.closestAirport.metar = null;
                     resultAirports.push(airport);
                 }));
-        })
+        });
         return P.all(promises)
             .then(() => {
                 context.result = resultAirports;
                 return resultAirports;
-            })
+            });
     }
 
     fetchDirections (context) {
@@ -144,7 +143,7 @@ class Update extends Base {
         _.each(context.result, (airport) => {
             const aiportCoordinates = airport.geometry.coordinates;
             if (aiportCoordinates) {
-                const coordinator = new coordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
+                const coordinator = new CoordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
                 const directions = coordinator.getDirections();
                 airport.directions = directions;
                 resultAirports.push(airport);

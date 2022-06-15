@@ -7,7 +7,6 @@ const errors = require('http-errors');
 const https = require('https');
 const _ = require('lodash');
 const FormData = require('form-data');
-const querystring = require('querystring');
 
 function telephoneParser (telephones) {
     if (telephones.length === 0) { return null; }
@@ -24,26 +23,25 @@ function telephoneParser (telephones) {
 }
 
 function parseNorms (norms) {
-    
-            if (norms.length === 0) { return null; }
-            let result = [];
-            const keys = Object.keys(norms);
-            _.each(keys, (key) => {
-                // get the content of the key
-                const type = _.startCase(_.toLower(key)); // to upper;
-                const content = norms[key].content;
-                // get the related documents of the key
-                const related_documents = norms[key].related_documents;
-                // create the object
-                const obj = {
-                    type,
-                    content,
-                    related_documents,
-                };
-                // push the object to the result array
-                result.push(obj);
-            });
-            return result;
+    if (norms.length === 0) { return null; }
+    const result = [];
+    const keys = Object.keys(norms);
+    _.each(keys, (key) => {
+        // get the content of the key
+        const type = _.startCase(_.toLower(key)); // to upper;
+        const content = norms[key].content;
+        // get the related documents of the key
+        const relatedDocuments = norms[key].related_documents;
+        // create the object
+        const obj = {
+            type,
+            content,
+            relatedDocuments,
+        };
+        // push the object to the result array
+        result.push(obj);
+    });
+    return result;
 }
 
 function parseHelpers (helpers) {
@@ -51,8 +49,6 @@ function parseHelpers (helpers) {
     // { visual: '', radio: [] }
     // thats a response from the api. in that case, result should be empty
 
-
-    
     const result = [];
     const keys = Object.keys(helpers);
     _.each(keys, (key) => {
@@ -67,17 +63,16 @@ function parseHelpers (helpers) {
         }
         const obj = {
             type,
-            helpers : rules,
+            helpers: rules,
         };
         // push the object to the result array
         result.push(obj);
     });
-    if (result.length === 0) { return ""; }
+    if (result.length === 0) { return ''; }
     return result;
 }
 
 function parseAts (ats) {
-    
     const result = [];
 
     _.each(ats, (selected) => {
@@ -85,12 +80,11 @@ function parseAts (ats) {
         const at = selected.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').replace(/\t/g, ' ');
         result.push(at);
     });
-    if (result.length === 0) { return ""}
+    if (result.length === 0) { return ''; }
     return result;
 }
 
 function parseAprons (aprons, taxiways) {
-    
     const apns = [];
     const twys = [];
 
@@ -112,9 +106,8 @@ function parseAprons (aprons, taxiways) {
     const apronTwy = {
         taxiways: twys,
         aprons: apns,
-    }
+    };
     return apronTwy;
-
 }
 
 function parseNotamDescription (notam) {
@@ -128,7 +121,7 @@ function parseNotamDescription (notam) {
 
     const split = notam.split('<span id="versionbreak">');
     const firstPart = split[0];
-    const secondPart = split[1].replace('</span>', '').replace('Versión en Español', 'Version en Español ')
+    const secondPart = split[1].replace('</span>', '').replace('Versión en Español', 'Version en Español ');
 
     return {
         english: firstPart,
@@ -137,11 +130,7 @@ function parseNotamDescription (notam) {
 }
 
 function parseRunways (runways) {
-    /**
- * 			"03/21 1000x30 M - Tierra.",
-			"08/26 900x30 M - Tierra."
-     */
-    let result = [];
+    const result = [];
     _.each(runways, (runway) => {
         console.log(runway);
         const regex = /(\d{2}\/\d{2})/g;
@@ -150,16 +139,16 @@ function parseRunways (runways) {
 
         if (runwayNumbers === null) { return; }
         if (runway.search(/(\d{2}\/\d{2})/g) > 3) { return; }
-        
+
         const runwayWidth = runway.split(' ')[1] || '';
-        const runwayType = runway.split('-')[1]|| '';
+        const runwayType = runway.split('-')[1] || '';
 
         result.push({
             numbers: runwayNumbers.toString(),
             width: runwayWidth,
             surface: runwayType,
         });
-    })
+    });
     return result;
 }
 
@@ -197,16 +186,15 @@ class MadhelService {
             });
     }
 
-    fetchNotam(context){
-        
+    fetchNotam (context) {
         const formData = new FormData();
         formData.append('indicador', this.targetAirport);
-        
+
         return axios.post(config.notamUrl, formData, {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
-                })
             })
+        })
             .then(response => {
                 context.notam = response.data;
             })
@@ -216,10 +204,10 @@ class MadhelService {
             });
     }
 
-    parseNotam(context){
+    parseNotam (context) {
         const notam = context.notam;
         const notamArray = [];
-        
+
         _.each(notam, (notamItem) => {
             const notamObj = {
                 ad: notamItem.ad,

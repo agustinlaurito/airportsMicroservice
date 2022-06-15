@@ -10,9 +10,6 @@ const parseFir = (fir) => {
     let name = '';
 
     switch (fir) {
-        default:
-            name = fir;
-            break;
         case 'SAVF':
             name = 'FIR Comodoro Rivadavia';
             break;
@@ -27,6 +24,9 @@ const parseFir = (fir) => {
             break;
         case 'SARR':
             name = 'FIR Resistencia';
+            break;
+        default:
+            name = fir;
             break;
     }
 
