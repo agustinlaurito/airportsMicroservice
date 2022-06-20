@@ -2,26 +2,21 @@
 
 const axios = require('axios');
 const config = require('../../../config/aip');
-const errors = require('http-errors');
 const cheerio = require('cheerio');
-const metarParser = require('metar-parser');
 const P = require('bluebird');
-const https = require('https');
 const _ = require('lodash');
 
-
 class Aip {
-
     getCharts (targets) {
         this.targetAirports = targets; // 4 letter code
 
         const context = {
-            rawData: "",
+            rawData: '',
         };
 
         return P.bind(this)
             .then(() => this.fetchData(context))
-            .then(() => this.parseData(context))
+            .then(() => this.parseData(context));
     }
 
     fetchData (context) {
@@ -30,14 +25,13 @@ class Aip {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             }
-        }
-        
+        };
 
-        return axios.get(url,options)
+        return axios.get(url, options)
             .then(response => {
                 context.response = response.data;
             })
-            .catch(error => {
+            .catch(() => {
                 console.log('Could not fetch data from AIP');
                 return P.resolve();
             });
@@ -56,25 +50,23 @@ class Aip {
                 return {
                     href: config.aipBaseUrl + $(a).attr('href'),
                     text: $(a).text()
-                }
+                };
             }).get();
             const target = $td.first().text();
-            
+
             _.each(this.targetAirports, (airport) => {
                 if (target.indexOf(airport) > -1) {
                     aipAirports.push({
-                        airport: airport,
+                        airport,
                         links: hrefs,
                     });
                 }
             });
-        })
+        });
 
         context.aipAirports = aipAirports;
         return P.resolve(aipAirports);
     }
-
-
 }
 
 module.exports = Aip;

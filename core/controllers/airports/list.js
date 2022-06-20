@@ -64,7 +64,6 @@ class Update extends Base {
             return context.result;
         }
         const requestedOacis = _.map(context.result, 'oaciCode');
-        const promises = [];
         const AIPService = new Aip();
 
         return AIPService.getCharts(requestedOacis)
@@ -75,12 +74,10 @@ class Update extends Base {
                         airport.aip = aip.links;
                     }
                 });
-                context.result = context.result;
                 return context.result;
             })
             .catch(() => {
-                context.result = context.result;
-                return context.result;
+                return P.resolve(context.result);
             });
     }
 
