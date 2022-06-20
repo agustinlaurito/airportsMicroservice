@@ -7,6 +7,7 @@ const _ = require('lodash');
 const Madhel = require('../../helpers/services/madhel');
 const Smn = require('../../helpers/services/smn');
 const CoordinateHelper = require('../../helpers/coordinates');
+const Aip = require('../../helpers/services/aip');
 
 class Update extends Base {
     handler () {
@@ -15,6 +16,7 @@ class Update extends Base {
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.fetchMadhel(context))
+            .then(() => this.fetchAip(context))
             .then(() => this.fetchMetar(context))
             .then(() => this.fetchTaf(context))
             .then(() => this.fetchAlternateMetar(context))
@@ -54,6 +56,31 @@ class Update extends Base {
             .then(() => {
                 context.result = resultAirports;
                 return resultAirports;
+            });
+    }
+
+    fetchAip (context) {
+        if (!this.options.query.with || this.options.query.with.indexOf('aip') === -1) {
+            return context.result;
+        }
+        const requestedOacis = _.map(context.result, 'oaciCode');
+        const promises = [];
+        const AIPService = new Aip();
+
+        return AIPService.getCharts(requestedOacis)
+            .then((aipData) => {
+                _.each(context.result, (airport) => {
+                    const aip = _.find(aipData, { airport: airport.oaciCode });
+                    if (aip) {
+                        airport.aip = aip.links;
+                    }
+                });
+                context.result = context.result;
+                return context.result;
+            })
+            .catch(() => {
+                context.result = context.result;
+                return context.result;
             });
     }
 

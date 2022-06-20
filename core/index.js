@@ -5,11 +5,9 @@ const app = require('../app');
 const config = require('../config/default');
 const errors = require('./helpers/errors');
 
-// const aptsData = new airportsData();
-// aptsData.handler();
-
-// const madhelService = new madhel("AER");
-// madhelService.handler();
+// const aipService = require('./helpers/services/aip');
+// const AIP = new aipService();
+// const charts = AIP.getCharts(["SADO"]);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
