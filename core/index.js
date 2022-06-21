@@ -5,10 +5,6 @@ const app = require('../app');
 const config = require('../config/default');
 const errors = require('./helpers/errors');
 
-// const aipService = require('./helpers/services/aip');
-// const AIP = new aipService();
-// const charts = AIP.getCharts(["SADO"]);
-
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
