@@ -131,18 +131,31 @@ function parseNotamDescription (notam) {
 
 function parseRunways (runways) {
     const result = [];
+    const parsedRunways = [];
     _.each(runways, (runway) => {
-        console.log(runway);
         const regex = /(\d{2}\/\d{2})/g;
-        const runwayNumbers = runway.match(regex);
-        // make runway numbers a string not a array
+        let runwayNumbers = runway.match(regex);
 
+        // check if runwayNumbers is an array
+        if (runwayNumbers instanceof Array) {
+            runwayNumbers = runwayNumbers[0]
+        }
+        
         if (runwayNumbers === null) { return; }
         if (runway.search(/(\d{2}\/\d{2})/g) > 3) { return; }
 
         const runwayWidth = runway.split(' ')[1] || '';
         const runwayType = runway.split('-')[1] || '';
 
+        // check if runwaynumbers is already in the array
+        const prevIndex = parsedRunways.indexOf(runwayNumbers);
+        if (prevIndex > -1) { 
+            // if it is, add the width and the runway type to the existing object
+            result[prevIndex].surface += runwayType;
+            return;
+        }
+        
+        parsedRunways.push(runwayNumbers);
         result.push({
             numbers: runwayNumbers.toString(),
             width: runwayWidth,
