@@ -1,40 +1,9 @@
 'use strict';
 
 const P = require('bluebird');
-const csvToJson = require('convert-csv-to-json');
 const _ = require('lodash');
 const errors = require('http-errors');
 const fs = require('fs');
-
-const parseFir = (fir) => {
-    let name = '';
-
-    switch (fir) {
-        case 'SAVF':
-            name = 'FIR Comodoro Rivadavia';
-            break;
-        case 'SACF':
-            name = 'FIR Córdoba';
-            break;
-        case 'SAEF':
-            name = 'FIR Ezeiza';
-            break;
-        case 'SAMF':
-            name = 'FIR Mendoza';
-            break;
-        case 'SARR':
-            name = 'FIR Resistencia';
-            break;
-        default:
-            name = fir;
-            break;
-    }
-
-    return {
-        name,
-        code: fir
-    };
-};
 
 class AirportsData {
     fetch (options) {
@@ -46,71 +15,16 @@ class AirportsData {
 
         return P.bind(this)
             .then(() => this.readJson(context))
-            .then(() => this.parseAirports(context))
             .then(() => this.filter(context))
             .then(() => {
                 return context.parsedAirports;
             });
     }
 
-    readCsv (context) {
-        const csvFilePath = './data/airports.csv';
-        const jsonArray = csvToJson.fieldDelimiter(';').getJsonFromCsv(csvFilePath);
-        context.rawData = jsonArray;
-        return context;
-    }
-
     readJson (context) {
         const jsonFilePath = './data/airports.json';
         const jsonArray = JSON.parse(fs.readFileSync(jsonFilePath));
-        context.rawData = jsonArray;
-        return context;
-    }
-
-    parseAirports (context) {
-        const airportsList = context.rawData;
-        const airports = [];
-
-        airportsList.forEach((airport) => {
-            const airportData = {
-                localCode: airport.local,
-                oaciCode: airport.oaci,
-                iataCode: airport.iata,
-                type: airport.type,
-                shortName: airport.denominacion.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, ''),
-                name: airport.denominacion.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, ''),
-                coordinates: [
-                    airport.coordenadas.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').split('  ')[0],
-                    airport.coordenadas.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').split('  ')[1],
-                ],
-                geometry: {
-                    type: 'Point',
-                    coordinates: {
-                        lat: parseFloat(airport.longitud),
-                        lng: parseFloat(airport.latitud),
-                    }
-                },
-                elevation: airport.elev,
-                elevationUnit: airport.uom_elev,
-                reference: airport.ref,
-                distanceToReference: airport.distancia_ref,
-                directionToReference: airport.direccion_ref,
-                public: airport.condicion === 'PUBLICO',
-                private: airport.condicion === 'PRIVADO',
-                controlled: airport.control === 'CONTROL',
-                region: airport.region,
-                fir: parseFir(airport.fir),
-                use: airport.uso,
-                traffic: airport.trafico,
-                province: airport.provincia,
-                isActive: airport.inhab !== 'NO',
-                closestAirport: airport.closestAirport || null,
-
-            };
-
-            airports.push(airportData);
-        });
-        context.parsedAirports = airports;
+        context.parsedAirports = jsonArray;
         return context;
     }
 

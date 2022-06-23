@@ -16,7 +16,11 @@ class Aip {
 
         return P.bind(this)
             .then(() => this.fetchData(context))
-            .then(() => this.parseData(context));
+            .then(() => this.parseData(context))
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
     }
 
     fetchData (context) {

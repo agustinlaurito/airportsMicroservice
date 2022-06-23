@@ -138,9 +138,9 @@ function parseRunways (runways) {
 
         // check if runwayNumbers is an array
         if (runwayNumbers instanceof Array) {
-            runwayNumbers = runwayNumbers[0]
+            runwayNumbers = runwayNumbers[0];
         }
-        
+
         if (runwayNumbers === null) { return; }
         if (runway.search(/(\d{2}\/\d{2})/g) > 3) { return; }
 
@@ -149,12 +149,12 @@ function parseRunways (runways) {
 
         // check if runwaynumbers is already in the array
         const prevIndex = parsedRunways.indexOf(runwayNumbers);
-        if (prevIndex > -1) { 
+        if (prevIndex > -1) {
             // if it is, add the width and the runway type to the existing object
             result[prevIndex].surface += runwayType;
             return;
         }
-        
+
         parsedRunways.push(runwayNumbers);
         result.push({
             numbers: runwayNumbers.toString(),
@@ -177,7 +177,11 @@ class MadhelService {
             .then(() => this.fetchData(context))
             .then(() => this.fetchNotam(context))
             .then(() => this.parseNotam(context))
-            .then(() => this.parseAirport(context));
+            .then(() => this.parseAirport(context))
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
     }
 
     fetchData (context) {
@@ -195,7 +199,7 @@ class MadhelService {
                 context.rawData = response.data;
             })
             .catch(error => {
-                throw new errors.InternalServerError('Error al obtener los datos', error);
+                console.log('Error al obtener los datos', error);
             });
     }
 
@@ -211,9 +215,8 @@ class MadhelService {
             .then(response => {
                 context.notam = response.data;
             })
-            .catch(error => {
-                console.log('NOTAMs not found');
-                P.resolve(error);
+            .catch(() => {
+                throw new errors.NotFound('NOTAMs not found');
             });
     }
 
