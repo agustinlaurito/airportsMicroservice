@@ -4,7 +4,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const allowlist = ['avolarapp.com.ar'];
+const allowlist = ['avolarapp.com.ar', 'localhost:3000'];
+
+
+const contains = (arr,str) => {
+  let contains = false;
+  arr.forEach(element => {
+    if (str.indexOf(element) > -1) {
+      contains = true;
+    }
+
+  });
+  return contains;
+
+}
 
 
 const app = express();
@@ -14,9 +27,9 @@ app.enable('trust proxy');
 app.disable('x-powered-by');
 app.use(cors({
   origin: (origin, callback) => {
-    if (allowlist.indexOf(origin) !== -1) {
+    if(contains(allowlist, origin)) {
       callback(null, true);
-    } else {
+    }else{
       callback(new Error('Not allowed by CORS'));
     }
   }
