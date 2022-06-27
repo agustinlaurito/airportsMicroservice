@@ -168,7 +168,7 @@ function parseRunways (runways) {
 class MadhelService {
     getAirport (target) {
         this.targetAirport = target; // 3 letter code of the airport
-
+        console.log('MadhelService: getAirport: ', target);
         const context = {
             rawData: [],
         };
@@ -179,7 +179,6 @@ class MadhelService {
             .then(() => this.parseNotam(context))
             .then(() => this.parseAirport(context))
             .catch((err) => {
-                console.log(err);
                 return null;
             });
     }
@@ -199,7 +198,7 @@ class MadhelService {
                 context.rawData = response.data;
             })
             .catch(error => {
-                console.log('Error al obtener los datos', error);
+                console.log('Error fetching madhel');
             });
     }
 

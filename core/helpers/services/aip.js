@@ -7,9 +7,28 @@ const P = require('bluebird');
 const _ = require('lodash');
 
 class Aip {
+
+    getOne (airport) {
+        const context = {
+            rawData: '',
+        };
+        this.targetAirports = [airport];
+
+        return P.bind(this)
+            .then(() => this.fetchData(context))
+            .then(() => this.parseData(context))
+            .then(() => {
+                console.log('aipAirports', context.aipAirports);
+                return context.aipAirports[0].links;
+            })
+            .catch((err) => {
+                return null;
+            });
+    }
+
     getCharts (targets) {
         this.targetAirports = targets; // 4 letter code
-
+        console.log('targets', targets);
         const context = {
             rawData: '',
         };
@@ -18,7 +37,6 @@ class Aip {
             .then(() => this.fetchData(context))
             .then(() => this.parseData(context))
             .catch((err) => {
-                console.log(err);
                 return null;
             });
     }

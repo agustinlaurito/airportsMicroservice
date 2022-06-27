@@ -59,7 +59,7 @@ class Smn {
                 };
             })
             .catch((error) => {
-                console.log('Metar not found', error);
+                console.log('Metar not found');
             });
     }
 
