@@ -46,7 +46,8 @@ app.use(bodyParser.urlencoded({
 app.use((req, res, next) => {
     
     res.on('finish', () => {
-      console.log("Request: " + req.method + " " + req.url + " " + res.statusCode);
+      let date = new Date();
+      console.log(`[${date.getMonth()}/${date.getDay()} at ${date.getHours()}:${date.getMinutes()}] ` + "Request: " + req.method + " " + req.url + " " + res.statusCode);
       console.log(`With query: ${JSON.stringify(req.query)}`);
     });
     next();

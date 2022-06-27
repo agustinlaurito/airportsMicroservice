@@ -5,6 +5,7 @@ const config = require('../../../config/smn');
 const errors = require('http-errors');
 const cheerio = require('cheerio');
 const metarParser = require('metar-parser');
+const P = require('bluebird');
 
 class Smn {
     testConnection () {
@@ -32,7 +33,6 @@ class Smn {
                 return tafString;
             })
             .catch(() => {
-                console.log('Taf not found');
             });
     }
 
@@ -58,8 +58,8 @@ class Smn {
                     translated: this.translateMetar(metar)
                 };
             })
-            .catch((error) => {
-                console.log('Metar not found');
+            .catch(() => {
+                return P.resolve();
             });
     }
 

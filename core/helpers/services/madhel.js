@@ -168,7 +168,6 @@ function parseRunways (runways) {
 class MadhelService {
     getAirport (target) {
         this.targetAirport = target; // 3 letter code of the airport
-        console.log('MadhelService: getAirport: ', target);
         const context = {
             rawData: [],
         };
@@ -197,8 +196,8 @@ class MadhelService {
                 }
                 context.rawData = response.data;
             })
-            .catch(error => {
-                console.log('Error fetching madhel');
+            .catch(() => {
+                return P.resolve();
             });
     }
 
@@ -215,7 +214,7 @@ class MadhelService {
                 context.notam = response.data;
             })
             .catch(() => {
-                throw new errors.NotFound('NOTAMs not found');
+                return P.resolve();
             });
     }
 

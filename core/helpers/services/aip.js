@@ -18,7 +18,6 @@ class Aip {
             .then(() => this.fetchData(context))
             .then(() => this.parseData(context))
             .then(() => {
-                console.log('aipAirports', context.aipAirports);
                 return context.aipAirports[0].links;
             })
             .catch((err) => {
@@ -28,7 +27,6 @@ class Aip {
 
     getCharts (targets) {
         this.targetAirports = targets; // 4 letter code
-        console.log('targets', targets);
         const context = {
             rawData: '',
         };
@@ -54,7 +52,6 @@ class Aip {
                 context.response = response.data;
             })
             .catch(() => {
-                console.log('Could not fetch data from AIP');
                 return P.resolve();
             });
     }
