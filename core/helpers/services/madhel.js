@@ -133,9 +133,14 @@ function parseRunways (runways) {
     const result = [];
     const parsedRunways = [];
     _.each(runways, (runway) => {
-        
-        const regex = /(\d{2}[R|L]?\/\d{2}[R|L]?)/g;
+        console.log(runway);
+        // const regex = /(\d{2}[R|L]?\/\d{2}[R|L]?)/g;
+        // same as above, but having in account that after the numbers and before the R L could be a space
+        const regex = /(\d{2}[ ]?[R|L]?\/\d{2}[ ]?[R|L]?)/g;
         let runwayNumbers = runway.match(regex);
+        
+        
+
 
         // check if runwayNumbers is an array
         if (runwayNumbers instanceof Array) {
@@ -155,10 +160,12 @@ function parseRunways (runways) {
             result[prevIndex].surface += runwayType;
             return;
         }
+        // remove all spaces from the runway numbers
+        const _runwayNumbers = runwayNumbers.replace(/\s/g, '');
 
         parsedRunways.push(runwayNumbers);
         result.push({
-            numbers: runwayNumbers.toString(),
+            numbers: _runwayNumbers.toString(),
             width: runwayWidth,
             surface: runwayType,
         });
