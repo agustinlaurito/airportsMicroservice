@@ -133,7 +133,8 @@ function parseRunways (runways) {
     const result = [];
     const parsedRunways = [];
     _.each(runways, (runway) => {
-        const regex = /(\d{2}\/\d{2})/g;
+        
+        const regex = /(\d{2}[R|L]?\/\d{2}[R|L]?)/g;
         let runwayNumbers = runway.match(regex);
 
         // check if runwayNumbers is an array
