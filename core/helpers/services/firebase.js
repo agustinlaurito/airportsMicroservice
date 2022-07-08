@@ -1,6 +1,7 @@
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const admin = require("firebase-admin");
 const serviceAccount = require("../../../data/avolar-app-firebase.json");
+const { initializeApp } = require('firebase-admin/app');
 
 
 class FirestoreDB {
@@ -42,6 +43,11 @@ class FirestoreDB {
         return docRef.id;
     }
 
+    async createDocument(collection, id, data) {
+        const docRef = this.db.collection(collection).doc(id);
+        await docRef.set(data);
+    }
+
     async update(collection, id, data) {
         const docRef = this.db.collection(collection).doc(id);
         await docRef.update(data);
@@ -58,6 +64,13 @@ class FirestoreDB {
             snapshot.forEach(doc => {
                 doc.ref.delete();
             });
+        });
+    }
+
+    async addField(collection, id, field, value) {
+        const docRef = this.db.collection(collection).doc(id);
+        await docRef.update({
+            [field]: value
         });
     }
 

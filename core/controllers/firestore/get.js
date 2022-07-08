@@ -7,7 +7,7 @@ class Route extends Base {
     handler(req) {
         const context = {
             collection: req.query.collection,
-            documentId: req.query.documentId,
+            documentId: req.query.localCode,
         }
 
         return P.bind(this)
