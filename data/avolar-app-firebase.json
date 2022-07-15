@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "avolar-app",
+  "private_key_id": "3d2d62195437d769f14b358d37e9f5c7a3e82c30",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCwXym/ig6LxkZV\n3lkxUpvriN+1L7Fg8rS2ne5+6iNRdaUSlqPhLppUajinSNFFCr9GY1XOLRsntJKr\nfUPWoDFEmYfNTQ98q28IRrzaMmfVmDE/ediR2aqZifTg0SlaXbrwHb2TZ13iCrmk\nJOxFKD3mCxTK+QscBb0u0AFHJAB07ygxHDZOArgLOyRePRLlyA2VoWpv6I3+FXhV\niBgf6Kt6RWX7rMI4bFpLGjgKlJ0wm+en6SpkUEg8KNtATlEC84XeQHadtyzX7d6C\n8oYlKYHk5Bu0DpsOEt3kz8x+z3xUyCNI3m+KUkGFcS61ctbrf3G816zFwIzf/BVS\nZvBiR0v3AgMBAAECggEAO2eyLhuYDqg35JBBxoUmk0zE3Mg1nIvjJmdHf2PphXR0\npzAp/pytyqUEdAPoyLJ3/oNS0WEL9nGxvSUyBkZqkcqMnS/JeZpciZMZ5Px5UM40\nOEcYFPgVqCV5X4fTv+Y2Is5BnjaAvrQSFyGAm0KUprkwxbTgcw3TzMKuy4Fqzfd3\nrMQ1h/tv+0eF/F5y2GuMa09Si4QxUqxJjNp/q7xLAncQ1VSH24i2YoyUPRZCUFtx\npumuaSforHyHYV9UorSha8N+N5+Q0fQmUC0pZu9oQgL/yFvDVQBvgvY01rTTJPOM\nh1smltsEGN31P59W7tpcNZ9TOkjYgl4ji8DTgzh2kQKBgQDtu4SRk/MYODwcp5GY\n7bX24XZm7/JJ4GYGG6cNW7OOTbEiPARCCtUR8daiMKGOK5YawYvFO3/GvMqe+a2n\nJwnAUtN5yzGIzrermiGpyDGpweAtEdQr4F1D9CStMQ0wM8PSnjWF8DFtBTMiToV4\nZUd6tIQb6etcaovM/KxepRbxpQKBgQC97JsSpPFPKvq/ZMmXn/7rjTojZ/Jn8RYg\nZ7YUUeeE3m9wiHZRF5KTNOIuf+bdfeShwOnBEgKnoAMmwJmui0AfxHlfsD4mR6P/\n4JZ8Dr8Gz691nHVCeTX6ZATda5FtiC3LE+vOgrTHMEQxlooFFVChvuuqubB2fiEM\n6UoJfiVcawKBgB/bNuKDHtop/vQgCESj5fRVNhaJJMB9j25WGkaR+TeidZAO1ss6\nxF6JN6e4OI3ijVS8hsxBMtggyE4RSxHRC194OdpiPhsFCFu4ZbZomy8SScYAU5wl\njpnih1+l6QyCg0Uf6jAuhZEEV1vLhdsiRzfMJL/Q0rcpl946JabxHGf5AoGAF2+V\n5yQRXtqH3Iw8UAh/NWPU87+E6wyV1WPW1QUSU5P7HmDIcNM+1Alni6NewqAhUVBz\nx85II5UcLnD/xckLHaBp9cPSt3iJpS56g05yhg2kshefZJd+cKpc61G1vVVbiT6p\nD2+TjSzIjXHtEBmEPKFJhWSqgMSpoWU8LJWzWIcCgYBFFETYD8kiY13WdqFIGtdV\ndoXxOxxS8AkuDBT9tKlxGv/gnWxYYsuEx4OTZYCkGy5I3qlE8e4WDYzetgHAZNV+\nb4iA2//XAfzVveaj+eMHrCfcIyEjQucpWzhfCGNXCytJGhrWY+8x3vrt09dPy4u2\nETxmGxWRBSTXWxBfOQ7Ziw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-n71k3@avolar-app.iam.gserviceaccount.com",
+  "client_id": "108533622208075370773",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-n71k3%40avolar-app.iam.gserviceaccount.com"
+}
