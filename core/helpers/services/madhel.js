@@ -137,7 +137,7 @@ function parseRunways (runways) {
         // same as above, but having in account that after the numbers and before the R L could be a space
         const regex = /(\d{2}[ ]?[R|L]?\/\d{2}[ ]?[R|L]?)/g;
         let runwayNumbers = runway.match(regex);
-        
+
         // check if runwayNumbers is an array
         if (runwayNumbers instanceof Array) {
             runwayNumbers = runwayNumbers[0];
@@ -181,7 +181,7 @@ class MadhelService {
             .then(() => this.fetchNotam(context))
             .then(() => this.parseNotam(context))
             .then(() => this.parseAirport(context))
-            .catch((err) => {
+            .catch(() => {
                 return null;
             });
     }
