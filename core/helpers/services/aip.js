@@ -7,7 +7,6 @@ const P = require('bluebird');
 const _ = require('lodash');
 
 class Aip {
-
     getOne (airport) {
         const context = {
             rawData: '',
@@ -20,7 +19,7 @@ class Aip {
             .then(() => {
                 return context.aipAirports[0].links;
             })
-            .catch((err) => {
+            .catch(() => {
                 return null;
             });
     }
@@ -34,7 +33,7 @@ class Aip {
         return P.bind(this)
             .then(() => this.fetchData(context))
             .then(() => this.parseData(context))
-            .catch((err) => {
+            .catch(() => {
                 return null;
             });
     }

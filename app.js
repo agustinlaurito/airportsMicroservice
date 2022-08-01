@@ -10,6 +10,7 @@ const allowlist = ['avolarapp.com.ar', 'localhost:3000'];
 const contains = (arr,str) => {
   let contains = false;
   arr.forEach(element => {
+    if(!str) return contains;
     if (str.indexOf(element) > -1) {
       contains = true;
     }

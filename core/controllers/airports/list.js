@@ -15,7 +15,7 @@ class Update extends Base {
 
         return P.bind(this)
             .then(() => this.fetchCsv(context))
-            .then(() => this.populateAirports(context))
+            .then(() => this.populateAirports(context));
     }
 
     fetchCsv (context) {
@@ -30,14 +30,12 @@ class Update extends Base {
     }
 
     async populateAirports (context) {
-        let resultAirports = [];
-        let promises = [];
+        const promises = [];
 
-        if(!this.options.query.with) { return context.result;};
+        if (!this.options.query.with) { return context.result; };
 
         _.each(context.parsedAirports, (airport) => {
-            
-            if(this.options.query.with.indexOf('madhel') > -1) {
+            if (this.options.query.with.indexOf('madhel') > -1) {
                 const madhelService = new Madhel();
                 promises.push(madhelService.getAirport(airport.localCode)
                     .then((madhelAirport) => {
@@ -45,7 +43,7 @@ class Update extends Base {
                     }));
             }
 
-            if(this.options.query.with.indexOf('metar') > -1) {
+            if (this.options.query.with.indexOf('metar') > -1) {
                 const smnService = new Smn();
                 promises.push(smnService.getByOaciCode(airport.oaciCode)
                     .then((metar) => {
@@ -54,16 +52,16 @@ class Update extends Base {
                     }));
             }
 
-            if(this.options.query.with.indexOf('taf') > -1) {
+            if (this.options.query.with.indexOf('taf') > -1) {
                 const smnService = new Smn();
                 promises.push(smnService.getTafByOaciCode(airport.oaciCode)
                     .then((taf) => {
                         airport.taf = taf;
                         return airport;
-                    }));            
-                }
+                    }));
+            }
 
-            if(this.options.query.with.indexOf('aip') > -1) {
+            if (this.options.query.with.indexOf('aip') > -1) {
                 const aipService = new Aip();
                 promises.push(aipService.getOne(airport.oaciCode)
                     .then((aip) => {
@@ -72,7 +70,7 @@ class Update extends Base {
                     }));
             }
 
-            if(this.options.query.with.indexOf('directions') > -1) {
+            if (this.options.query.with.indexOf('directions') > -1) {
                 const aiportCoordinates = airport.geometry.coordinates;
                 if (aiportCoordinates) {
                     const coordinator = new CoordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
@@ -81,7 +79,7 @@ class Update extends Base {
                 }
             }
 
-            if(this.options.query.with.indexOf('metar') > -1) {
+            if (this.options.query.with.indexOf('metar') > -1) {
                 if (!airport.closestAirport) {
                     return;
                 }
@@ -98,17 +96,14 @@ class Update extends Base {
             .then(() => {
                 context.result = context.parsedAirports;
                 return context.result;
-            })
+            });
     }
-
-    
 }
 
 module.exports = new Update().handlerize();
 
 /**
- * 
- 
+ *
 
     fetchAlternateMetar (context) {
         if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
@@ -139,23 +134,6 @@ module.exports = new Update().handlerize();
                 return resultAirports;
             });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     fetchMadhel (context) {
         if (!this.options.query.with || this.options.query.with.indexOf('madhel') === -1) {
