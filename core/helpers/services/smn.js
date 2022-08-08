@@ -38,8 +38,10 @@ class Smn {
 
     getByOaciCode (oaciCode) {
         const url = `${config.metarBaseURL}${oaciCode}`;
+        // add timeout axios 
 
-        return axios.get(url)
+
+        return axios.get(url, { timeout: config.connOpts.timeout })
             .then(response => {
                 const $ = cheerio.load(response.data);
                 const metar = $('form[name="imprimir"]').find('input[type="hidden"]').val();
@@ -58,8 +60,9 @@ class Smn {
                     translated: this.translateMetar(metar)
                 };
             })
-            .catch(() => {
-                return P.resolve();
+            .catch((e) => {
+                console.log(e);
+                return P.resolve({});
             });
     }
 
