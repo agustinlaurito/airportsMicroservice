@@ -60,8 +60,7 @@ class Smn {
                     translated: this.translateMetar(metar)
                 };
             })
-            .catch((e) => {
-                console.log(e);
+            .catch(() => {
                 return P.resolve({});
             });
     }
