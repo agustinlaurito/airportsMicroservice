@@ -45,11 +45,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use((req, res, next) => {
-    
     res.on('finish', () => {
-      let date = new Date();
-      console.log(`[${date.getMonth()}/${date.getDay()} at ${date.getHours()}:${date.getMinutes()}] ` + "Request: " + req.method + " " + req.url + " " + res.statusCode);
-      console.log(`With query: ${JSON.stringify(req.query)}`);
+      if(req.url === '/airports/autocompleteQuery') {return};
+      console.log( "Request: " + req.method + " " + req.url + " " + res.statusCode + ` | query: ${JSON.stringify(req.query)}`);
     });
     next();
   });

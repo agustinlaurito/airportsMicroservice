@@ -17,6 +17,8 @@ function handle (app) {
 
     // Handle uncached errors
     app.use((error, req, res, next) => {
+        console.log(error);
+
         const message = (error && error.message) || DEFAULT_ERROR_MESSAGE;
         let status = Number((error && (error.status || error.statusCode || error.responseCode || error.code)) || DEFAULT_ERROR_STATUS);
 

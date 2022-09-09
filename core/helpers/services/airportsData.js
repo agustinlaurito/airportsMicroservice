@@ -8,7 +8,7 @@ const fs = require('fs');
 class AirportsData {
     fetch (options) {
         this.options = options;
-
+        this.options.page = this.options.page ? this.options.page : 1;
         const context = {
             rawData: [],
         };
