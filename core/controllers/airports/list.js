@@ -9,7 +9,7 @@ const Smn = require('../../helpers/services/smn');
 const CoordinateHelper = require('../../helpers/coordinates');
 const Aip = require('../../helpers/services/aip');
 
-class Update extends Base {
+class Route extends Base {
     handler () {
         const context = {};
 
@@ -20,7 +20,6 @@ class Update extends Base {
 
     fetchCsv (context) {
         const airportFetcher = new AirportsData();
-
         return airportFetcher.fetch(this.options.query)
             .then((parsedAirports) => {
                 context.parsedAirports = parsedAirports;
@@ -100,155 +99,4 @@ class Update extends Base {
     }
 }
 
-module.exports = new Update().handlerize();
-
-/**
- *
-
-    fetchAlternateMetar (context) {
-        if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
-            return context.result;
-        }
-        const promises = [];
-        const resultAirports = [];
-
-        _.each(context.result, (airport) => {
-            if (!airport.closestAirport) {
-                return;
-            }
-            const smnService = new Smn();
-            promises.push(smnService.getByOaciCode(airport.closestAirport.oaciCode)
-                .then((metar) => {
-                    // create attribute metar
-                    airport.closestAirport.metar = metar;
-                    resultAirports.push(airport);
-                })
-                .catch(() => {
-                    airport.closestAirport.metar = null;
-                    resultAirports.push(airport);
-                }));
-        });
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
-            });
-    }
-
-    fetchMadhel (context) {
-        if (!this.options.query.with || this.options.query.with.indexOf('madhel') === -1) {
-            context.result = context.parsedAirports;
-            return context.parsedAirports;
-        }
-
-        const resultAirports = [];
-        const promises = [];
-
-        _.each(context.parsedAirports, (airport) => {
-            const madhelService = new Madhel();
-            promises.push(madhelService.getAirport(airport.localCode)
-                .then((madhelData) => {
-                    const mergedAirport = _.merge(airport, madhelData);
-                    resultAirports.push(mergedAirport);
-                })
-            );
-        });
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
-            });
-    }
-
-    fetchAip (context) {
-        if (!this.options.query.with || this.options.query.with.indexOf('aip') === -1) {
-            return context.result;
-        }
-        const requestedOacis = _.map(context.result, 'oaciCode');
-        const AIPService = new Aip();
-
-        return AIPService.getCharts(requestedOacis)
-            .then((aipData) => {
-                _.each(context.result, (airport) => {
-                    const aip = _.find(aipData, { airport: airport.oaciCode });
-                    if (aip) {
-                        airport.aip = aip.links;
-                    }
-                });
-                return context.result;
-            })
-            .catch(() => {
-                return P.resolve(context.result);
-            });
-    }
-
-    fetchMetar (context) {
-        if (!this.options.query.with || this.options.query.with.indexOf('metar') === -1) {
-            return context.result;
-        }
-
-        const resultAirports = [];
-        const promises = [];
-
-        _.each(context.result, (airport) => {
-            const smnService = new Smn();
-            promises.push(smnService.getByOaciCode(airport.oaciCode)
-                .then((metar) => {
-                    // create attribute metar
-                    airport.metar = metar;
-                    resultAirports.push(airport);
-                }));
-        });
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
-            });
-    }
-
-    fetchTaf (context) {
-        if (!this.options.query.with || this.options.query.with.indexOf('taf') === -1) {
-            return context.result;
-        }
-        const resultAirports = [];
-        const promises = [];
-        _.each(context.result, (airport) => {
-            const smnService = new Smn();
-            promises.push(smnService.getTafByOaciCode(airport.oaciCode)
-                .then((taf) => {
-                    // create attribute taf
-                    airport.taf = taf;
-                    resultAirports.push(airport);
-                }));
-        });
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
-            });
-    }
-
-        fetchDirections (context) {
-        if ((!this.options.query.with || this.options.query.with.indexOf('directions') === -1) && !this.options.query.lat && !this.options.query.lon) {
-            return context.result;
-        }
-
-        const resultAirports = [];
-        const promises = [];
-        _.each(context.result, (airport) => {
-            const aiportCoordinates = airport.geometry.coordinates;
-            if (aiportCoordinates) {
-                const coordinator = new CoordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
-                const directions = coordinator.getDirections();
-                airport.directions = directions;
-                resultAirports.push(airport);
-            }
-        });
-
-        return P.all(promises)
-            .then(() => {
-                context.result = resultAirports;
-                return resultAirports;
-            });
-    }
- */
+module.exports = new Route().handlerize();

@@ -38,8 +38,7 @@ class Smn {
 
     getByOaciCode (oaciCode) {
         const url = `${config.metarBaseURL}${oaciCode}`;
-        // add timeout axios 
-
+        // add timeout axios
 
         return axios.get(url, { timeout: config.connOpts.timeout })
             .then(response => {
