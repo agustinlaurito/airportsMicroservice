@@ -13,6 +13,7 @@ class Route extends Base {
     handler () {
         const context = {};
 
+        console.log(`Requested ${this.options.query.filters.localCode}`);
         return P.bind(this)
             .then(() => this.fetchCsv(context))
             .then(() => this.populateAirports(context));
