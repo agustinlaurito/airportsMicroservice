@@ -10,8 +10,8 @@ app.get('/airports/list', require('../core/controllers/airports/list'));
 app.get('/airports/getClosest', require('../core/controllers/airports/getClosestAirports'));
 app.get('/airports/autocompleteQuery', require('../core/controllers/airports/autocompleteQuery'));
 app.get('/firestore/get', require('../core/controllers/firestore/get'));
-app.get('/firestore/airports/comments', require('../core/controllers/firestore/airports/comments/get'));
-app.post('/firestore/airports/comments', require('../core/controllers/firestore/airports/comments/create'));
+app.get('/firestore/airports', require('../core/controllers/firestore/airports/get'));
+app.post('/firestore/airports', require('../core/controllers/firestore/airports/create'));
 
 errors(app);
 

@@ -1,6 +1,6 @@
-const Base = require('../../../../helpers/route');
+const Base = require('../../../helpers/route');
 const P = require('bluebird');
-const database = require('../../../../helpers/services/firebase');
+const database = require('../../../helpers/services/firebase');
 const _ = require('lodash');
 
 const defaults = {
@@ -19,7 +19,7 @@ class Route extends Base {
 
     handler (req) {
         const context = {
-            collection: defaults.collection,
+            collection: req.query.collection || defaults.collection,
             filters: this.options.query.filters,
             orderBy: this.options.orderBy || defaults.orderBy,
             orderDirection: this.options.orderDirection || defaults.orderDirection,
