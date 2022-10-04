@@ -11,14 +11,31 @@ const FormData = require('form-data');
 function telephoneParser (telephones) {
     if (telephones.length === 0) { return null; }
 
-    const result = [];
-    _.each(telephones, (telephone) => {
-        const telephoneData = {
-            number: telephone.split(' - ')[0],
-            type: telephone.split(' - ')[1] || 'Contacto',
+    const result = _.flatMap(telephones, (telephone, index) => {
+        if(!telephone){return []}
+
+        let type = 'No Especificado';
+        let number = telephone;
+
+        if(telephone.indexOf('-') > -1){
+            number = telephone.split('-')[0];
+            type = telephone.split('-')[1];
+        }
+        const reg = new RegExp('^[( 0 -9 )]+$');
+        if(!reg.test(telephone) && reg.test(telephones[index + 1])){
+            number = _.cloneDeep(telephones[index + 1]);
+            type = telephone;
+            telephones[index + 1] = null;
+        }
+        if(!reg.test(telephone)){
+            type = telephone;
+            number = telephone.replace(/[^ (0-9).]/g, '').replace(/\(.\s*\)/g, "");
+        }
+        return{
+            type,
+            number
         };
-        result.push(telephoneData);
-    });
+    })
     return result;
 }
 
