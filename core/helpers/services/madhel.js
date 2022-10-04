@@ -28,7 +28,7 @@ function telephoneParser (telephones) {
             telephones[index + 1] = null;
         }
         if(!reg.test(telephone)){
-            type = telephone;
+            type = telephone.replace(/[(0-9)]/g, '');
             number = telephone.replace(/[^ (0-9).]/g, '').replace(/\(.\s*\)/g, "");
         }
         return{
@@ -36,6 +36,7 @@ function telephoneParser (telephones) {
             number
         };
     })
+    console.log(result);
     return result;
 }
 
