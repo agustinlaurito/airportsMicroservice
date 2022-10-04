@@ -10,7 +10,6 @@ const FormData = require('form-data');
 
 function telephoneParser (telephones) {
     if (telephones.length === 0) { return null; }
-
     const result = _.flatMap(telephones, (telephone, index) => {
         if(!telephone){return []}
 
@@ -27,7 +26,7 @@ function telephoneParser (telephones) {
             type = telephone;
             telephones[index + 1] = null;
         }
-        if(!reg.test(telephone)){
+        else if(!reg.test(telephone)){
             type = telephone.replace(/[-(0-9)]/g, '');
             number = telephone.replace(/[^ (0-9).]/g, '').replace(/\(.\s*\)/g, "");
         }
