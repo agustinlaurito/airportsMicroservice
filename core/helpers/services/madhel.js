@@ -89,14 +89,16 @@ function parseHelpers (helpers) {
 }
 
 function parseAts (ats) {
-    const result = [];
-
-    _.each(ats, (selected) => {
-        // replace the /n with spaces and remove backslashes, quotes and \t
-        const at = selected.replace(/\\/g, '').replace(/\//g, ' ').replace(/"/g, '').replace(/\t/g, ' ');
-        result.push(at);
+    const result = _.map(ats, string => {   
+        const frequency = string.match('[0-9][0-9][0-9][,][0-9][0-9]')[0];
+        const dependency = string.substring(0,string.indexOf('-')).replace(frequency, '').replace('\t', ' ').replaceAll(/[^\w\sÁÉÍÓÚáéíóúñÑ]|MHz/gi,'').trim();
+        const description = string.substring(string.indexOf('-') + 1, string.length).trim();
+        return {
+            frequency,
+            dependency,
+            description
+        }
     });
-    if (result.length === 0) { return ''; }
     return result;
 }
 
@@ -210,15 +212,15 @@ class MadhelService {
                 rejectUnauthorized: false
             })
         })
-            .then(response => {
-                if (response.data.length === 0) {
-                    throw new errors.NotFound('No se encontraron datos para el aeropuerto');
-                }
-                context.rawData = response.data;
-            })
-            .catch(() => {
-                return P.resolve();
-            });
+        .then(response => {
+            if (response.data.length === 0) {
+                throw new errors.NotFound('No se encontraron datos para el aeropuerto');
+            }
+            context.rawData = response.data;
+        })
+        .catch(() => {
+            return P.resolve();
+        });
     }
 
     fetchNotam (context) {
