@@ -196,6 +196,7 @@ class MadhelService {
 
         return P.bind(this)
             .then(() => this.fetchData(context))
+            .then(() => this.fetchAerobot(context))
             .then(() => this.fetchNotam(context))
             .then(() => this.parseNotam(context))
             .then(() => this.parseAirport(context))
@@ -223,21 +224,35 @@ class MadhelService {
         });
     }
 
+    fetchAerobot(context){
+        if(context.rawData.data.twy.length){
+            return P.resolve();
+        }
+        const url = `https://madhel.aerobot.com.ar/json/${this.targetAirport}`;
+        const config = {
+            headers: {
+                'Authorization': '7bc4944b5a5268a3e3961a3756e696ce93517607649201b1fbbe4519e409586b770adbc64d70b78670f6d583a71c7ca9bfe18030840dc9c17b16e0b05b7661e9',
+            }
+        }
+        return axios.get(url, config).then((response) => {
+            context.rawData = response.data;
+        });
+    }
+
     fetchNotam (context) {
         const formData = new FormData();
         formData.append('indicador', this.targetAirport);
-
+        
         return axios.post(config.notamUrl, formData, {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
             })
+        }).then(response => {
+            context.notam = response.data;
         })
-            .then(response => {
-                context.notam = response.data;
-            })
-            .catch(() => {
-                return P.resolve();
-            });
+        .catch(() => {
+            return P.resolve();
+        });
     }
 
     parseNotam (context) {
