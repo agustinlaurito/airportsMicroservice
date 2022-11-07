@@ -10,9 +10,6 @@ class Update extends Base {
 
         return P.bind(this)
             .then(() => this.fetchAirports(context));
-        // .then(() => {
-        //     return context.parsedAirports;
-        // })
     }
 
     fetchAirports (context) {
