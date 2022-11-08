@@ -90,7 +90,7 @@ function parseHelpers (helpers) {
 
 function parseAts (ats) {
     const result = _.map(ats, string => {   
-        const frequency = string.match('[0-9][0-9][0-9][,][0-9][0-9]')[0];
+        const frequency = string.match('[0-9][0-9][0-9][,][0-9][0-9]');
         const dependency = string.substring(0,string.indexOf('-')).replace(frequency, '').replace('\t', ' ').replaceAll(/[^\w\sÁÉÍÓÚáéíóúñÑ]|MHz/gi,'').trim();
         const description = string.substring(string.indexOf('-') + 1, string.length).trim();
         return {
@@ -192,6 +192,7 @@ class MadhelService {
         this.targetAirport = target; // 3 letter code of the airport
         const context = {
             rawData: [],
+            isAerobot: false,
         };
 
         return P.bind(this)
@@ -200,8 +201,9 @@ class MadhelService {
             .then(() => this.fetchNotam(context))
             .then(() => this.parseNotam(context))
             .then(() => this.parseAirport(context))
-            .catch(() => {
-                return null;
+            .catch((e) => {
+
+                throw e;
             });
     }
 
@@ -225,7 +227,7 @@ class MadhelService {
     }
 
     fetchAerobot(context){
-        if(context.rawData.data.twy.length){
+        if(context.rawData.data.rwy.length){
             return P.resolve();
         }
         const url = `https://madhel.aerobot.com.ar/json/${this.targetAirport}`;
@@ -235,14 +237,14 @@ class MadhelService {
             }
         }
         return axios.get(url, config).then((response) => {
+            context.isAerobot = true;
             context.rawData = response.data;
-        });
+        })
     }
 
     fetchNotam (context) {
         const formData = new FormData();
         formData.append('indicador', this.targetAirport);
-        
         return axios.post(config.notamUrl, formData, {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
@@ -276,7 +278,9 @@ class MadhelService {
     }
 
     parseAirport (context) {
+
         const airport = context.rawData;
+
         const airportData = {
             name: airport.human_readable_identifier,
             localCode: airport.data.local,
@@ -296,6 +300,7 @@ class MadhelService {
             type: airport.type,
             updatedAt: airport.updated_at,
             notam: context.notam,
+            isAerobot: context.isAerobot
         };
         return airportData;
     }
