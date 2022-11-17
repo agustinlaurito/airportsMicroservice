@@ -36,7 +36,7 @@ class AirportsData {
         if (filters) {
             filteredAirports = _.filter(airports, (airport) => {
                 return _.every(filters, (value, key) => {
-                    return airport[key] === value;
+                    return _.toUpper(airport[key]) === _.toUpper(value);
                 });
             });
 

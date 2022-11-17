@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
+    "dev": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "node_modules/.bin/eslint index.js ecosystem.config.js config core tests",
     "lint-fix": "node_modules/.bin/eslint --fix index.js config core "
@@ -47,6 +48,7 @@
     "logger": "0.0.1",
     "metar-parser": "^1.0.1",
     "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
     "sequelize": "^6.20.0",
     "ssl-root-cas": "^1.3.1",
     "uuid": "^8.3.2",

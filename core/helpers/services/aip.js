@@ -7,83 +7,78 @@ const P = require('bluebird');
 const _ = require('lodash');
 
 class Aip {
-    getOne (airport) {
+
+    getCharts (target) {
+        this.targetAirport = target; // 4 letter code
         const context = {
             rawData: '',
         };
-        this.targetAirports = [airport];
-
         return P.bind(this)
-            .then(() => this.fetchData(context))
-            .then(() => this.parseData(context))
+            .then(() => this.process(context))
+            .catch(() => {
+                return null;
+            });
+    }
+
+    process(context){
+        const promises = [];
+        promises.push(
+            this.fetchData(config.aipChartsList, context)
+                .then((apts => context.aipList = apts))
+        );
+        promises.push(
+            this.fetchData(config.aipADChartsList, context)
+                .then((apts => context.adList = apts))
+        )
+        
+        return P.all(promises)
             .then(() => {
-                return context.aipAirports[0].links;
+                return {
+                    charts: context.aipList,
+                    ad: context.adList
+                }
             })
-            .catch(() => {
-                return null;
-            });
     }
 
-    getCharts (targets) {
-        this.targetAirports = targets; // 4 letter code
-        const context = {
-            rawData: '',
-        };
-
-        return P.bind(this)
-            .then(() => this.fetchData(context))
-            .then(() => this.parseData(context))
-            .catch(() => {
-                return null;
-            });
-    }
-
-    fetchData (context) {
-        const url = config.aipChartsList;
+    fetchData (URL) {
         const options = {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             }
         };
-
-        return axios.get(url, options)
+        return axios.get(URL, options)
             .then(response => {
-                context.response = response.data;
+                return this.parseData(response.data);
             })
             .catch(() => {
                 return P.resolve();
             });
     }
 
-    async parseData (context) {
-        const $ = cheerio.load(context.response);
-        const aipAirports = [];
+    parseData (data) {
+        const $ = cheerio.load(data);
+        let hrefs = [];
 
-        await $('tr').each((i, tr) => {
+        $('tr').each((i, tr) => {
             const $tr = $(tr);
             const $td = $tr.find('td');
             const $a = $td.find('a');
+            const target = $td.first().text();
 
-            const hrefs = $a.map((i, a) => {
+            if (target.indexOf(this.targetAirport) < 0) {
+                return;
+            }
+            
+            hrefs = $a.map((i, a) => {
                 return {
                     href: config.aipBaseUrl + $(a).attr('href'),
                     text: $(a).text()
                 };
             }).get();
-            const target = $td.first().text();
-
-            _.each(this.targetAirports, (airport) => {
-                if (target.indexOf(airport) > -1) {
-                    aipAirports.push({
-                        airport,
-                        links: hrefs,
-                    });
-                }
-            });
         });
+        
+        return hrefs;
 
-        context.aipAirports = aipAirports;
-        return P.resolve(aipAirports);
     }
 }
 

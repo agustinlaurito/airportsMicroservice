@@ -33,9 +33,8 @@ class Route extends Base {
         const promises = [];
 
         if (!this.options.query.with) { return context.result; };
-
         _.each(context.parsedAirports, (airport) => {
-            if (this.options.query.with.indexOf('madhel') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('MADHEL') > -1) {
                 const madhelService = new Madhel();
                 promises.push(madhelService.getAirport(airport.localCode)
                     .then((madhelAirport) => {
@@ -43,7 +42,7 @@ class Route extends Base {
                     }));
             }
 
-            if (this.options.query.with.indexOf('metar') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('METAR', ) > -1) {
                 const smnService = new Smn();
                 promises.push(smnService.getByOaciCode(airport.oaciCode)
                     .then((metar) => {
@@ -52,7 +51,7 @@ class Route extends Base {
                     }));
             }
 
-            if (this.options.query.with.indexOf('taf') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('TAF') > -1) {
                 const smnService = new Smn();
                 promises.push(smnService.getTafByOaciCode(airport.oaciCode)
                     .then((taf) => {
@@ -61,16 +60,16 @@ class Route extends Base {
                     }));
             }
 
-            if (this.options.query.with.indexOf('aip') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('AIP') > -1) {
                 const aipService = new Aip();
-                promises.push(aipService.getOne(airport.oaciCode)
+                promises.push(aipService.getCharts(airport.oaciCode)
                     .then((aip) => {
                         airport.aip = aip;
                         return airport;
                     }));
             }
 
-            if (this.options.query.with.indexOf('directions') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('DIRECTIONS') > -1) {
                 const aiportCoordinates = airport.geometry.coordinates;
                 if (aiportCoordinates) {
                     const coordinator = new CoordinateHelper(aiportCoordinates, { lat: this.options.query.lat, lng: this.options.query.lng });
@@ -79,7 +78,7 @@ class Route extends Base {
                 }
             }
 
-            if (this.options.query.with.indexOf('metar') > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('METAR') > -1) {
                 if (!airport.closestAirport) {
                     return;
                 }
