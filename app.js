@@ -26,18 +26,18 @@ const app = express();
 
 app.enable('trust proxy');
 app.disable('x-powered-by');
-app.use(cors({
-  origin: (origin, callback) => {
-    if(origin === undefined) {
-      callback(new Error('Not allowed by CORS'));
-    }
-    if(contains(allowlist, origin)) {
-      callback(null, true);
-    }else{
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-}));
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(origin === undefined) {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//     if(contains(allowlist, origin)) {
+//       callback(null, true);
+//     }else{
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// }));
 app.use(bodyParser.raw());
 app.use(bodyParser.text());
 app.use(bodyParser.json());
