@@ -8,6 +8,7 @@ const Madhel = require('../../helpers/services/madhel');
 const Smn = require('../../helpers/services/smn');
 const CoordinateHelper = require('../../helpers/coordinates');
 const Aip = require('../../helpers/services/aip');
+const GeoJSON = require('geojson');
 
 class Route extends Base {
     handler () {
@@ -16,7 +17,8 @@ class Route extends Base {
         console.log(`Requested ${this.options.query.filters.localCode}`);
         return P.bind(this)
             .then(() => this.fetchCsv(context))
-            .then(() => this.populateAirports(context));
+            .then(() => this.populateAirports(context))
+            .then(() => this.parseToGeoJSON(context))
     }
 
     fetchCsv (context) {
@@ -96,6 +98,30 @@ class Route extends Base {
                 context.result = context.parsedAirports;
                 return context.result;
             });
+    }
+
+    parseToGeoJSON(context) {
+        
+        if (!this.options.query.as || !this.options.query.as.toUpperCase().indexOf('GEOJSON') < -1) return context.result;
+
+        context.result = context.result.map(airport => {
+            const options = {
+                Point: ['geometry.coordinates.lat', 'geometry.coordinates.lng'],
+                include: ['name', 'shortName', 'localCode', 'oaciCode', 'iataCode']
+            }
+            const object = GeoJSON.parse(airport, options);
+     
+            object.extra = {};
+     
+            Object.keys(airport).forEach(key => {
+                if (!options.include.includes(key) && key !== 'geometry') {
+                    object.extra[key] = airport[key];
+                }
+            });
+            return object;
+        })
+
+        return context.result;
     }
 }
 

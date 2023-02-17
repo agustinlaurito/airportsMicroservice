@@ -227,9 +227,11 @@ class MadhelService {
     }
 
     fetchAerobot(context){
+
         if(context.rawData.data.rwy.length){
             return P.resolve();
         }
+
         const url = `https://madhel.aerobot.com.ar/json/${this.targetAirport}`;
         const config = {
             headers: {
@@ -237,6 +239,7 @@ class MadhelService {
             }
         }
         return axios.get(url, config).then((response) => {
+
             context.isAerobot = true;
             context.rawData = response.data;
         })
@@ -248,7 +251,8 @@ class MadhelService {
         return axios.post(config.notamUrl, formData, {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
-            })
+            }),
+            timeout: 6000
         }).then(response => {
             context.notam = response.data;
         })
