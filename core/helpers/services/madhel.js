@@ -228,7 +228,7 @@ class MadhelService {
 
     fetchAerobot(context){
 
-        if(context.rawData && context.rawData.data && context.rawData.data.rwy.length) {
+        if(context.rawData?.data?.rwy?.length) {
             return P.resolve();
         }
 
