@@ -63,9 +63,9 @@ class Aip {
             const $tr = $(tr);
             const $td = $tr.find('td');
             const $a = $td.find('a');
-            const target = $td.first().text();
+            const target = $tr.find('td:nth-child(2)').text().trim();
 
-            if (target.indexOf(this.targetAirport) < 0) {
+            if (target !== this.targetAirport) {
                 return;
             }
             
