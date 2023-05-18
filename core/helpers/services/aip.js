@@ -55,31 +55,37 @@ class Aip {
             });
     }
 
-    parseData (data) {
+    parseData(data) {
+
+        const cheerio = require('cheerio');
+
         const $ = cheerio.load(data);
-        let hrefs = [];
+        const hrefs = [];
 
         $('tr').each((i, tr) => {
             const $tr = $(tr);
             const $td = $tr.find('td');
             const $a = $td.find('a');
-            const target = $tr.find('td:nth-child(2)').text().trim();
-
-            if (target !== this.targetAirport) {
-                return;
-            }
+            const target = $tr.find('td:nth-child(1)').text().trim();
             
-            hrefs = $a.map((i, a) => {
-                return {
-                    href: config.aipBaseUrl + $(a).attr('href'),
-                    text: $(a).text()
-                };
-            }).get();
-        });
-        
-        return hrefs;
 
+            if (target.includes(this.targetAirport)) {
+
+                const href = $a.attr('href');
+                const text = $a.text();
+
+                if(!href || !text) return;
+
+                hrefs.push({
+                    href: config.aipBaseUrl + href,
+                    text: text
+                });
+            }
+        });
+
+        return hrefs;
     }
+
 }
 
 module.exports = Aip;
