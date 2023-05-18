@@ -68,7 +68,7 @@ class Route extends Base {
                     .then((aip) => {
                         airport.aip = aip;
                         return airport;
-                    }));
+                    })); 
             }
 
             if (this.options.query.with.toUpperCase().indexOf('DIRECTIONS') > -1) {
@@ -78,18 +78,6 @@ class Route extends Base {
                     const directions = coordinator.getDirections();
                     airport.directions = directions;
                 }
-            }
-
-            if (this.options.query.with.toUpperCase().indexOf('METAR') > -1) {
-                if (!airport.closestAirport) {
-                    return;
-                }
-                const smnService = new Smn();
-                promises.push(smnService.getByOaciCode(airport.closestAirport.oaciCode)
-                    .then((metar) => {
-                        airport.closestAirport.metar = metar;
-                        return airport;
-                    }));
             }
         });
 
