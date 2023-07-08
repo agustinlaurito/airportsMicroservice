@@ -44,11 +44,16 @@ class Route extends Base {
                     }));
             }
 
-            if (this.options.query.with.toUpperCase().indexOf('METAR', ) > -1) {
+            if (this.options.query.with.toUpperCase().indexOf('METAR') > -1) {
                 const smnService = new Smn();
                 promises.push(smnService.getByOaciCode(airport.oaciCode)
                     .then((metar) => {
                         airport.metar = metar;
+                        return airport;
+                    }));
+                promises.push(smnService.getByOaciCode(airport.closestAirport.oaciCode)
+                    .then((metar) => {
+                        airport.closestAirport.metar = metar;
                         return airport;
                     }));
             }
@@ -68,7 +73,7 @@ class Route extends Base {
                     .then((aip) => {
                         airport.aip = aip;
                         return airport;
-                    })); 
+                    }));
             }
 
             if (this.options.query.with.toUpperCase().indexOf('DIRECTIONS') > -1) {
@@ -89,7 +94,6 @@ class Route extends Base {
     }
 
     parseToGeoJSON(context) {
-        
         if (!this.options.query.as || !this.options.query.as.toUpperCase().indexOf('GEOJSON') < -1) return context.result;
 
         context.result = context.result.map(airport => {
@@ -98,9 +102,9 @@ class Route extends Base {
                 include: ['name', 'shortName', 'localCode', 'oaciCode', 'iataCode']
             }
             const object = GeoJSON.parse(airport, options);
-     
+
             object.extra = {};
-     
+
             Object.keys(airport).forEach(key => {
                 if (!options.include.includes(key) && key !== 'geometry') {
                     object.extra[key] = airport[key];
