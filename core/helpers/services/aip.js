@@ -66,11 +66,21 @@ class Aip {
             const $tr = $(tr);
             const $td = $tr.find('td');
             const $a = $td.find('a');
-            const target = $tr.find('td:nth-child(1)').text().trim();
+            const targetText = $tr.find('td:nth-child(1)').text().trim();
             
+            // Extracting ICAO codes using regex. ICAO codes are four-letter alphanumeric code designators.
+            const regex = /\b[a-zA-Z]{4}\b/g;
+            let match;
+            let found = false;
+            while ((match = regex.exec(targetText)) !== null) {
+                if (match[0] === this.targetAirport) {
+                    found = true;
+                    break; // If we found the targetAirport, no need to continue the loop
+                }
+            }
 
-            if (target.includes(this.targetAirport)) {
 
+            if (found) { // this will only be true if targetText contains the exact targetAirport code
                 const href = $a.attr('href');
                 const text = $a.text();
 
@@ -78,7 +88,7 @@ class Aip {
 
                 hrefs.push({
                     href: config.aipBaseUrl + href,
-                    text: text
+                    text: targetText // changed from 'text' to 'targetText' to store the airport information
                 });
             }
         });
