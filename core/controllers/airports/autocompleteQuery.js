@@ -32,7 +32,6 @@ class Autocomplete extends Base {
         let index = 0;
         // make a list to search in for any airport using localCode, iataCode, icaoCode or name
         const indexes = _.map(context.parsedAirports, (airport) => {
-            
             let description = `${airport.name} - ${airport.localCode}`;
             // airport.oaciCode ? (description += ` - ${airport.oaciCode}`) : null;
             if (airport.oaciCode) {
@@ -44,8 +43,9 @@ class Autocomplete extends Base {
                 iataCode: airport.iataCode,
                 oaciCode: airport.oaciCode,
                 name: airport.name,
+                geometry: airport.geometry,
                 description
-            }
+            };
 
             if (this.options.query.as && this.options.query.as.toUpperCase().indexOf('GEOJSON') > -1) {
                 object.shortName = airport.shortName;
@@ -60,15 +60,13 @@ class Autocomplete extends Base {
     }
 
     parseToGeoJSON(context) {
-
         if (!this.options.query.as || !this.options.query.as.toUpperCase().indexOf('GEOJSON') < -1) return context.indexes;
 
         return context.indexes.map(airport => {
-
-            const options = {
-                Point: ['geometry.coordinates.lat', 'geometry.coordinates.lng'],
-                include: ['name', 'shortName', 'localCode', 'oaciCode', 'iataCode']
-            }
+        const options = {
+            Point: ['geometry.coordinates.lat', 'geometry.coordinates.lng'],
+            include: ['name', 'shortName', 'localCode', 'oaciCode', 'iataCode']
+        }
 
             return GeoJSON.parse(airport, options);
 
