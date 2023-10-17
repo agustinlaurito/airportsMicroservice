@@ -73,10 +73,12 @@ class Aip {
             let match;
             let found = false;
             while ((match = regex.exec(targetText)) !== null) {
+
                 if (match[0] === this.targetAirport) {
                     found = true;
                     break; // If we found the targetAirport, no need to continue the loop
                 }
+                
             }
 
 
